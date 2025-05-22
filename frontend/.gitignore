@@ -28,6 +28,4 @@ dist-ssr
 # vscode
 .vscode
 
-# Google Cloud
-backend/token.json
-integrations/token.json
+backend/.env
