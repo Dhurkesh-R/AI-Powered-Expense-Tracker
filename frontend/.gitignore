@@ -28,4 +28,4 @@ dist-ssr
 # vscode
 .vscode
 
-backend/.env
+../backend/.env
