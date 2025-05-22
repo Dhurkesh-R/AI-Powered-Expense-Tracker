@@ -1,5 +1,5 @@
 import pandas as pd
-import pickle
+import joblib
 from prophet import Prophet
 import os
 from flask_jwt_extended import get_jwt_identity
@@ -7,7 +7,7 @@ from flask_jwt_extended import get_jwt_identity
 # Load the trained Prophet model (change filename as needed)
 def load_model(model_path='model/model.pkl'):
     with open(model_path, 'rb') as f:
-        model = pickle.load(f)
+        model = joblib.load(f)
     return model
 
 def make_forecast(model, df, periods=30):
@@ -20,7 +20,7 @@ def make_forecast(model, df, periods=30):
 # Load the tf-idf vectorizer (change filename as needed)
 def load_vectorizer(vectorizer_path='model/vectorizer.pkl'):
     with open(vectorizer_path, 'rb') as f:
-        vectorizer = pickle.load(f)
+        vectorizer = joblib.load(f)
     return vectorizer
 
 # Make future predictions
