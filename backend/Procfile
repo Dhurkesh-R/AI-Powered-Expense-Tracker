@@ -1,0 +1,62 @@
+# Content: Procfile for PostgreSQL
+🔹 1. Check if the server is running
+Run this in your terminal:
+
+
+
+# pg_ctl -D C:\pgdata status
+If it says "server is not running", then you need to start it:
+
+
+
+# pg_ctl -D C:\pgdata -l logfile start
+You should see:
+waiting for server to start.... done
+server started
+
+🔹 2. Confirm it's listening on port 5432
+Once started, confirm that PostgreSQL is accepting connections:
+# netstat -an | find "5432"
+You should see something like:
+
+nginx
+
+TCP    127.0.0.1:5432     LISTENING
+
+
+🔹 3. Connect to default DB with current user
+Try connecting again:
+# psql -U Dhurkesh -d postgres
+
+If that works: 🎉
+Then create the postgres superuser and the expense_db database.
+
+🚨 Still Not Working?
+If the above fails, here are fallback checks:
+
+✔️ Check if pg_hba.conf and postgresql.conf allow connections
+C:\pgdata\postgresql.conf:
+
+ini
+
+listen_addresses = 'localhost'
+port = 5432
+C:\pgdata\pg_hba.conf:
+Make sure it has:
+
+sql
+
+local   all             all                                     trust
+host    all             all             127.0.0.1/32            trust
+After editing either file, restart PostgreSQL:
+
+
+
+# pg_ctl -D C:\pgdata restart
+
+
+# Reset all migration history
+rm -rf migrations/
+flask db init
+flask db migrate -m "Initial migration"
+flask db upgrade

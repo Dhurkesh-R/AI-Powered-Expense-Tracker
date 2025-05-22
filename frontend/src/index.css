@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  transition: background-color 0.3s, color 0.3s;
+}
+/* index.css or tailwind.css */
+html.gradient, html.gradient body {
+  background: linear-gradient(to right, #1e3a8a 80%, #111827 100%, #3730a3 80%);
+  color: white;
+}
+
+/* index.css */
+html {
+  zoom: 0.75;
+}
