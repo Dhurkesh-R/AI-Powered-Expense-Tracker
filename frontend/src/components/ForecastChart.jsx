@@ -24,6 +24,7 @@ const ForecastChart = ({ data, theme }) => {
             tick={{ fill: theme === "gradient" || theme === "dark" ? "#fff" : "#222", fontSize: 12 }}
           />
           <YAxis
+            domain={[0, 'auto']}
             tick={{ fill: theme === "gradient" || theme === "dark" ? "#fff" : "#222", fontSize: 12 }}
           />
           <Tooltip

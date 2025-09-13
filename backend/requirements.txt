@@ -7,3 +7,9 @@ flask-sqlalchemy
 flask-jwt-extended
 psycopg2-binary
 werkzeug
+flask-migrate
+numpy==1.24.3
+scikit-learn
+flask-mail
+python-dotenv
+apscheduler

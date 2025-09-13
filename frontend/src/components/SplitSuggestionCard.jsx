@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getSplitSummary } from "../services/api";
+import { EditSplitSummary } from "./EditSplitSummary"
 
 const SplitSuggestionCard = ({ groupId, theme }) => {
   const [summary, setSummary] = useState([]);
@@ -38,6 +39,8 @@ const SplitSuggestionCard = ({ groupId, theme }) => {
           </li>
         ))}
       </ul>
+
+      <EditSplitSummary summary={summary} setSummary={setSummary} />
     </div>
   );
 };

@@ -50,9 +50,9 @@ app.register_blueprint(auth_bp)
 categorizer_model = load_model()
 vectorizer = load_vectorizer()
 
-@app.before_request
-def create_tables():
-    db.create_all()
+# @app.before_request 
+# def create_tables():
+#     db.create_all()
 
 @app.route('/predict', methods=['GET'])
 @jwt_required()
@@ -74,8 +74,11 @@ def predict():
             'y': e.amount
         } for e in expenses])
 
+
+
         if df.empty:
             return jsonify({'status': 'error', 'message': 'Not enough data to predict'}), 422
+        df['floor'] = 0
 
         # Train model
         model = Prophet()
@@ -83,6 +86,7 @@ def predict():
 
         # Forecast
         future = model.make_future_dataframe(periods=30)
+        future['floor'] = 0
         forecast = model.predict(future)
         forecast_json = forecast[['ds', 'yhat']].to_dict(orient='records')
 
