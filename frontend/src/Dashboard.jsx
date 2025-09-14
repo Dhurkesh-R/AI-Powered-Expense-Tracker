@@ -27,6 +27,12 @@ const Dashboard = () => {
   const [selectedGroup, setSelectedGroup] = useState(""); // "" = personal
   const { theme, cycleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  const triggerReload = () => {
+    setReloadKey((k) => k + 1); // increment key -> remount chart
+  };
+
 
   const loadForecast = async () => {
     try {
@@ -180,12 +186,23 @@ const Dashboard = () => {
             <ExpenseCharts data={historical} monthlyBudget={monthlyBudget} theme={theme}/>
             {selectedGroup && <AuditLogPanel groupId={selectedGroup} />}
             <SmartSuggestions theme={theme} className="mb-10"/>
-            <div className="flex w-full gap-4 items-stretch">
+            <div className="flex w-full gap-4 items-stretch"> 
               {selectedGroup && (
-                <UserSpendingSplit groupId={selectedGroup} theme={theme} />
+                <UserSpendingSplit
+                  key={reloadKey}
+                  groupId={selectedGroup}
+                  theme={theme}
+                />
               )}
-              {selectedGroup && <SplitSuggestionCard groupId={selectedGroup} theme={theme} />}
+              {selectedGroup && (
+                <SplitSuggestionCard
+                  groupId={selectedGroup}
+                  theme={theme}
+                  onUpdated={triggerReload}
+                />
+              )}
             </div>
+            
           </>
         )}
         <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>

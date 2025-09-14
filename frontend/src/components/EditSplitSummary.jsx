@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
-import { updateSplitSummary, fetchGroupSpendingSplit } from "../services/api";
-import { loadSpendingSplit } from "./UserSpendingSplit"
+import { updateSplitSummary } from "../services/api";
 
-const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
+const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated, onUpdated1 }) => {
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
 
@@ -20,8 +19,7 @@ const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
       console.log("Updated summary:", summary);
       setShowModal(false);
       onUpdated()
-      loadSpendingSplit()
-    
+      onUpdated1()
     } catch (error) {
       console.error("Update failed", error);
       alert("Failed to save changes!");
