@@ -569,8 +569,12 @@ def group_spending_split(group_id):
 @app.route('/api/group/<int:group_id>/split-summary', methods=['GET'])
 @jwt_required()
 def split_summary(group_id):
-    current_user_id = get_jwt_identity()
+    current_username = get_jwt_identity()
+    user = User.query.filter_by(username=current_username).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
 
+    current_user_id = user.id
     # Get all expenses for this group
     expenses = Expense.query.filter_by(group_id=group_id).all()
     if not expenses:
