@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import { updateSplitSummary, fetchGroupSpendingSplit } from "../services/api";
-import { setData } from "./UserSpendingSplit"
+import { loadSpendingSplit } from "./UserSpendingSplit"
 
 const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
   const { theme } = useTheme();
@@ -20,10 +20,7 @@ const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
       console.log("Updated summary:", summary);
       setShowModal(false);
       onUpdated()
-      useEffect(() => {
-        if (!groupId) return;
-        fetchGroupSpendingSplit(groupId).then(setData).catch(console.error);
-      }, [groupId]);
+      loadSpendingSplit()
     
     } catch (error) {
       console.error("Update failed", error);

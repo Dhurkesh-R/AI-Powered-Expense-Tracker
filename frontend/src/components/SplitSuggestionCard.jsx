@@ -4,6 +4,7 @@ import EditSplitSummary from "./EditSplitSummary"
 
 const SplitSuggestionCard = ({ groupId, theme }) => {
   const [summary, setSummary] = useState([]);
+  const [message, setMessage] = useState("");
 
   const loadSplitSummary = async () => {
     try {
@@ -11,7 +12,7 @@ const SplitSuggestionCard = ({ groupId, theme }) => {
       setSummary(summary);
     } catch (err) {
       if (err.message.includes("Not enough data")) {
-        setMessage("You need to add at least one expense to see forecasts.");
+        setMessage("You need to add at least one expense to see Split Summary.");
       } else {
         setMessage("Something went wrong. Please try again.");
       }

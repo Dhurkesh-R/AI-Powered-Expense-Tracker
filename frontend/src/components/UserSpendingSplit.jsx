@@ -4,12 +4,26 @@ import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#f87171", "#6ee7b7"];
 
+export const loadSpendingSplit = async () => {
+  try {
+    const data = await fetchGroupSpendingSplit(groupId);
+    setData(data);
+  } catch (err) {
+    if (err.message.includes("Not enough data")) {
+      setMessage("You need to add at least one expense to see Spending Split Chart.");
+    } else {
+      setMessage("Something went wrong. Please try again.");
+    }
+  }
+};
+
 const UserSpendingSplit = ({ groupId, theme }) => {
   const [data, setData] = useState([]);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (!groupId) return;
-    fetchGroupSpendingSplit(groupId).then(setData).catch(console.error);
+    loadSpendingSplit(groupId, setData, setMessage)
   }, [groupId]);
 
   if (!groupId || data.length === 0) return null;
