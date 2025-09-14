@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
-import { updateSplitSummary } from "../services/api";
+import { updateSplitSummary, fetchGroupSpendingSplit } from "../services/api";
 
 const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
   const { theme } = useTheme();
@@ -19,6 +19,8 @@ const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
       console.log("Updated summary:", summary);
       setShowModal(false);
       onUpdated()
+      fetchGroupSpendingSplit(groupId);
+    
     } catch (error) {
       console.error("Update failed", error);
       alert("Failed to save changes!");
@@ -83,7 +85,7 @@ const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
                 className={
                   theme === "gradient"
                     ? "px-3 py-1 bg-gray-900 text-white rounded"
-                    : "px-3 py-1 bg-gray-300 rounded"
+                    : "px-3 py-1 bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-600 rounded"
                 }
               >
                 Cancel

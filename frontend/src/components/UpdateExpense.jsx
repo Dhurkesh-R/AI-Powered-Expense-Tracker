@@ -102,7 +102,7 @@ const UpdateExpense = ({ expense, onUpdated }) => {
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 onClick={() => setShowModal(false)}
-                className={theme === "gradient" ? "px-3 py-1 bg-gray-900 text-white rounded" : "px-3 py-1 bg-gray-300 rounded"}
+                className={theme === "gradient" ? "px-3 py-1 bg-gray-900 text-white rounded" : "px-3 py-1 bg-gray-300 dark:bg-gray-500 dark:hover:bg-gray-600 rounded"}
               >
                 Cancel
               </button>
