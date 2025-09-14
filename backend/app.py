@@ -566,9 +566,12 @@ def split_summary(group_id):
 
         if m.adjusted_balance is not None:
             balance = m.adjusted_balance
+
+        display_spent = round(share_per_user, 2) + balance
+
         result.append({
             "username": m.user.username,
-            "spent": spent,
+            "spent": display_spent,
             "should_have_spent": round(share_per_user, 2),
             "balance": balance  # + means overpaid, - means underpaid
         })

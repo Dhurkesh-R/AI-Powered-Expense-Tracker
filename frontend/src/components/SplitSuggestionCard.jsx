@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getSplitSummary } from "../services/api";
-import { EditSplitSummary } from "./EditSplitSummary"
+import EditSplitSummary from "./EditSplitSummary"
 
 const SplitSuggestionCard = ({ groupId, theme }) => {
   const [summary, setSummary] = useState([]);
