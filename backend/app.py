@@ -569,10 +569,15 @@ def group_spending_split(group_id):
 @app.route('/api/group/<int:group_id>/split-summary', methods=['GET'])
 @jwt_required()
 def split_summary(group_id):
+    current_user_id = get_jwt_identity()
+
     # Get all expenses for this group
     expenses = Expense.query.filter_by(group_id=group_id).all()
     if not expenses:
-        return jsonify({"message": "No expenses yet."}), 200
+        # still include user_role for consistency
+        membership = GroupMembership.query.filter_by(group_id=group_id, user_id=current_user_id).first()
+        role = membership.role if membership else None
+        return jsonify({"message": "No expenses yet.", "user_role": role}), 200
 
     # Get total per user
     user_totals = {}
@@ -582,7 +587,7 @@ def split_summary(group_id):
     members = GroupMembership.query.filter_by(group_id=group_id).all()
     num_members = len(members)
     total_spent = sum(user_totals.values())
-    share_per_user = total_spent / num_members
+    share_per_user = total_spent / num_members if num_members > 0 else 0
 
     # Build result
     result = []
@@ -602,7 +607,15 @@ def split_summary(group_id):
             "balance": balance  # + means overpaid, - means underpaid
         })
 
-    return jsonify(result)
+    # find current user's role
+    membership = GroupMembership.query.filter_by(group_id=group_id, user_id=current_user_id).first()
+    role = membership.role if membership else None
+
+    return jsonify({
+        "user_role": role,   # 👈 now frontend knows if admin/member
+        "summary": result
+    })
+
 
 @app.route('/api/group/<int:group_id>/split-summary', methods=['PUT'])
 @jwt_required()
