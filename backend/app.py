@@ -532,13 +532,46 @@ def get_audit_log(group_id):
 @jwt_required()
 def group_spending_split(group_id):
     from sqlalchemy import func
-    data = db.session.query(
-        User.username,
-        func.sum(Expense.amount)
-    ).join(Expense).filter(Expense.group_id == group_id).group_by(User.username).all()
 
-    result = [{"user": u, "total": float(a)} for u, a in data]
+    # 1. Get all members in the group
+    members = (
+        db.session.query(User.id, User.username, GroupMembership.adjusted_balance)
+        .join(GroupMembership, GroupMembership.user_id == User.id)
+        .filter(GroupMembership.group_id == group_id)
+        .all()
+    )
+
+    # 2. Raw spent by each user
+    spent_data = dict(
+        db.session.query(
+            Expense.user_id,
+            func.coalesce(func.sum(Expense.amount), 0)
+        ).filter(Expense.group_id == group_id)
+        .group_by(Expense.user_id)
+        .all()
+    )
+
+    # 3. Total group expenses
+    total_group_expenses = sum(spent_data.values()) if spent_data else 0
+    num_users = len(members) if members else 1
+    should_have_spent = total_group_expenses / num_users if num_users > 0 else 0
+
+    result = []
+    for user_id, username, adjusted_balance in members:
+        spent = spent_data.get(user_id, 0)
+        balance = spent - should_have_spent + (adjusted_balance or 0)
+
+        # 👇 virtual spent (for display only)
+        display_spent = should_have_spent + balance
+
+        result.append({
+            "user": username,
+            "total": round(display_spent, 2)   # 👈 not raw spent, but adjusted
+        })
+
+
     return jsonify(result)
+
 
 @app.route('/api/group/<int:group_id>/split-summary', methods=['GET'])
 @jwt_required()
