@@ -4,7 +4,7 @@ import { PieChart, Pie, Tooltip, Cell, Legend } from "recharts";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#f87171", "#6ee7b7"];
 
-export const loadSpendingSplit = async () => {
+export const loadSpendingSplit = async (groupId, setData, setMessage) => {
   try {
     const data = await fetchGroupSpendingSplit(groupId);
     setData(data);
