@@ -305,3 +305,21 @@ export const getSplitSummary = async (groupId) => {
 
   return res.json();
 };
+
+export const updateSplitSummary = async (groupId, summary) => {
+  const res = await fetchWithRefresh(`${API_BASE}/api/group/${groupId}/split-summary`, {
+    method: "PUT",
+    headers: {
+      ...getAuthHeaders(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ summary }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || "Failed to update split summary");
+  }
+
+  return res.json();
+};

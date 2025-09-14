@@ -563,6 +563,9 @@ def split_summary(group_id):
     for m in members:
         spent = user_totals.get(m.user_id, 0)
         balance = round(spent - share_per_user, 2)
+
+        if m.adjusted_balance is not None:
+            balance = m.adjusted_balance
         result.append({
             "username": m.user.username,
             "spent": spent,
@@ -571,6 +574,34 @@ def split_summary(group_id):
         })
 
     return jsonify(result)
+
+@app.route('/api/group/<int:group_id>/split-summary', methods=['PUT'])
+@jwt_required()
+def update_split_summary(group_id):
+    data = request.json
+    if not data or "summary" not in data:
+        return jsonify({"message": "Invalid request"}), 400
+
+    summary_updates = data["summary"]
+
+    # Example: just log or update balances (depends on your schema)
+    for user_data in summary_updates:
+        username = user_data.get("username")
+        balance = user_data.get("balance")
+
+        # If you have a Balance table, update it here. Example:
+        member = GroupMembership.query.join(User).filter(
+            GroupMembership.group_id == group_id,
+            User.username == username
+        ).first()
+
+        if member:
+            # ⚠️ You’ll need a place to store balance adjustments in DB
+            member.adjusted_balance = balance  
+
+    db.session.commit()
+    return jsonify({"message": "Summary updated successfully"})
+
 
 
 def check_recurring_expenses():

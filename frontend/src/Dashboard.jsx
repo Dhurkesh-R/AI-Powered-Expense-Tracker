@@ -61,7 +61,7 @@ const Dashboard = () => {
     <div className={
       theme === "gradient"
           ? "min-h-screen bg-gray-900 text-white"
-          : "min-h-screen bg-gray-100 dark:bg-black-900 text-black dark:text-white"
+          : "min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white"
     }>
       <div className={
         theme === "gradient"

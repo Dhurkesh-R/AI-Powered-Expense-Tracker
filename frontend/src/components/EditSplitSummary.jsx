@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
+import { updateSplitSummary } from "../services/api";
 
-const EditSplitSummary = ({ summary, setSummary }) => {
+const EditSplitSummary = ({ groupId, summary, setSummary }) => {
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
 
@@ -14,13 +15,15 @@ const EditSplitSummary = ({ summary, setSummary }) => {
 
   const handleUpdate = async () => {
     try {
-      // Here you’d call API to persist changes if needed
+      await updateSplitSummary(groupId, summary); // send to backend
       console.log("Updated summary:", summary);
       setShowModal(false);
     } catch (error) {
       console.error("Update failed", error);
+      alert("Failed to save changes!");
     }
   };
+
 
   const inputClass =
     theme === "gradient"

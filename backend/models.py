@@ -39,8 +39,12 @@ class GroupMembership(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     role = db.Column(db.String(20), default="member")  # 'admin' or 'member'
 
+    # NEW: store manual balance adjustments
+    adjusted_balance = db.Column(db.Float, default=0.0)
+
     user = db.relationship("User", backref="group_memberships")
     group = db.relationship("Group", backref="memberships")
+
 
 class ExpenseAudit(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -40,7 +40,7 @@ const SplitSuggestionCard = ({ groupId, theme }) => {
         ))}
       </ul>
 
-      <EditSplitSummary summary={summary} setSummary={setSummary} />
+      <EditSplitSummary groupId={groupId} summary={summary} setSummary={setSummary} />
     </div>
   );
 };
