@@ -531,41 +531,34 @@ def get_audit_log(group_id):
 @app.route('/api/group/<int:group_id>/spending_split', methods=['GET'])
 @jwt_required()
 def group_spending_split(group_id):
-    from sqlalchemy import func
+    # Get all expenses for this group
+    expenses = Expense.query.filter_by(group_id=group_id).all()
+    if not expenses:
+        return jsonify({"message": "No expenses yet."}), 200
 
-    # 1. Get all members in the group
-    members = (
-        db.session.query(User.id, User.username, GroupMembership.adjusted_balance)
-        .join(GroupMembership, GroupMembership.user_id == User.id)
-        .filter(GroupMembership.group_id == group_id)
-        .all()
-    )
+    # Get total per user
+    user_totals = {}
+    for exp in expenses:
+        user_totals[exp.user_id] = user_totals.get(exp.user_id, 0) + exp.amount
 
-    # 2. Raw spent by each user
-    spent_data = dict(
-        db.session.query(
-            Expense.user_id,
-            func.coalesce(func.sum(Expense.amount), 0)
-        ).filter(Expense.group_id == group_id)
-        .group_by(Expense.user_id)
-        .all()
-    )
+    members = GroupMembership.query.filter_by(group_id=group_id).all()
+    num_members = len(members)
+    total_spent = sum(user_totals.values())
+    share_per_user = total_spent / num_members
 
-    # 3. Total group expenses
-    total_group_expenses = sum(spent_data.values()) if spent_data else 0
-    num_users = len(members) if members else 1
-    should_have_spent = total_group_expenses / num_users if num_users > 0 else 0
-
+    # Build result
     result = []
-    for user_id, username, adjusted_balance in members:
-        spent = spent_data.get(user_id, 0)
-        balance = spent - should_have_spent + (adjusted_balance or 0)
+    for m in members:
+        spent = user_totals.get(m.user_id, 0)
+        balance = round(spent - share_per_user, 2)
 
-        # 👇 virtual spent (for display only)
-        display_spent = should_have_spent + balance
+        if m.adjusted_balance is not None:
+            balance = m.adjusted_balance
+
+        display_spent = round(share_per_user, 2) + balance
 
         result.append({
-            "user": username,
+            "user": m.user.username,
             "total": round(display_spent, 2)   # 👈 not raw spent, but adjusted
         })
 
