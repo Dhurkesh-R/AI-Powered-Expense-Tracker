@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from "../contexts/ThemeContext";
 import { updateSplitSummary } from "../services/api";
 
-const EditSplitSummary = ({ groupId, summary, setSummary }) => {
+const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated }) => {
   const { theme } = useTheme();
   const [showModal, setShowModal] = useState(false);
 
@@ -18,6 +18,7 @@ const EditSplitSummary = ({ groupId, summary, setSummary }) => {
       await updateSplitSummary(groupId, summary); // send to backend
       console.log("Updated summary:", summary);
       setShowModal(false);
+      onUpdated()
     } catch (error) {
       console.error("Update failed", error);
       alert("Failed to save changes!");

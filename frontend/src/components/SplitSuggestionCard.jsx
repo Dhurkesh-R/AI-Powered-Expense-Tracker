@@ -5,9 +5,22 @@ import EditSplitSummary from "./EditSplitSummary"
 const SplitSuggestionCard = ({ groupId, theme }) => {
   const [summary, setSummary] = useState([]);
 
+  const loadSplitSummary = async () => {
+    try {
+      const summary = await getSplitSummary(groupId);
+      setSummary(summary);
+    } catch (err) {
+      if (err.message.includes("Not enough data")) {
+        setMessage("You need to add at least one expense to see forecasts.");
+      } else {
+        setMessage("Something went wrong. Please try again.");
+      }
+    }
+  };
+
   useEffect(() => {
     if (!groupId) return;
-    getSplitSummary(groupId).then(setSummary);
+    loadSplitSummary()
   }, [groupId]);
 
   if (!groupId || summary.length === 0) return null;
@@ -40,7 +53,7 @@ const SplitSuggestionCard = ({ groupId, theme }) => {
         ))}
       </ul>
 
-      <EditSplitSummary groupId={groupId} summary={summary} setSummary={setSummary} />
+      <EditSplitSummary groupId={groupId} summary={summary} setSummary={setSummary} onUpdated={loadSplitSummary}/>
     </div>
   );
 };
