@@ -260,20 +260,17 @@ from sqlalchemy import extract, func
 @jwt_required()
 def get_suggestions():
     username = get_jwt_identity()
-
-    # ✅ Get the actual user object
     user = User.query.filter_by(username=username).first()
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    user_id = user.id  # ✔ This is now safe to use for querying expense data
-
+    user_id = user.id
     now = datetime.utcnow()
-    current_month = now.month
-    current_year = now.year
+    current_month, current_year = now.month, now.year
     last_month = current_month - 1 if current_month > 1 else 12
     last_month_year = current_year if current_month > 1 else current_year - 1
 
+    # --- Utility for totals ---
     def get_category_totals(month, year):
         result = (
             db.session.query(Expense.category, func.sum(Expense.amount))
@@ -290,22 +287,44 @@ def get_suggestions():
 
     suggestions = []
 
+    # --- Compare month-to-month spending ---
     for cat in set(this_month.keys()).union(prev_month.keys()):
-        curr = this_month.get(cat, 0)
-        prev = prev_month.get(cat, 0)
+        curr, prev = this_month.get(cat, 0), prev_month.get(cat, 0)
         if curr > prev:
-            diff = curr - prev
-            percent = round((diff / prev) * 100) if prev > 0 else 100
-            suggestions.append(f"You’ve spent {percent}% more on {cat} than last month.")
+            diff, percent = curr - prev, round((curr - prev) / prev * 100) if prev > 0 else 100
+            suggestions.append(
+                f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f})."
+            )
+            suggestions.append(f"💡 Suggestion: Try setting a weekly cap for {cat} expenses.")
         elif prev > curr and curr > 0:
-            suggestions.append(f"You reduced your {cat} spending by ₹{prev - curr:.0f} this month.")
+            suggestions.append(
+                f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month."
+            )
+            suggestions.append(f"🎯 Suggestion: Turn this into a habit — keep tracking {cat} spending.")
         elif curr == 0 and prev > 0:
-            suggestions.append(f"You didn’t spend anything on {cat} this month (₹{prev:.0f} last month).")
+            suggestions.append(
+                f"🚫 You didn’t spend anything on {cat} this month (₹{prev:.0f} last month)."
+            )
+            suggestions.append(f"💡 Suggestion: Did you intentionally cut {cat}? If so, great job!")
 
+    # --- Overspending alerts (budget-based) ---
+    budgets = {b.category: b.limit for b in Budget.query.filter_by(user_id=user_id).all()}
+    for cat, spent in this_month.items():
+        if cat in budgets:
+            budget = budgets[cat]
+            if spent > budget:
+                suggestions.append(f"🔥 Overspent on **{cat}** by ₹{spent - budget:.0f} (Budget: ₹{budget})")
+                suggestions.append(f"💡 Suggestion: Add a **task** to review {cat} bills.")
+            elif spent >= 0.8 * budget:
+                suggestions.append(f"⚠️ You’ve used 80% of your {cat} budget (₹{spent:.0f}/₹{budget}).")
+                suggestions.append(f"💡 Suggestion: Slow down spending in {cat} for the rest of the month.")
+
+    # --- No suggestions? ---
     if not suggestions:
-        suggestions.append("No major changes in your spending trends this month.")
+        suggestions.append("✅ No major spending changes. Keep it up!")
 
-    return jsonify({"suggestions": suggestions})
+    return jsonify({"smart_suggestions": suggestions})
+
 
 @app.route("/api/groups", methods=["POST"])
 @jwt_required()
