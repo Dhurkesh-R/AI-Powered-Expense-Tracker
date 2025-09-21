@@ -256,7 +256,15 @@ def delete_expense(id):
 
 from sqlalchemy import extract, func
 
-@app.route("/suggestions", methods=["GET"])
+from flask import jsonify, Blueprint
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from datetime import datetime, timedelta
+from sqlalchemy import func, extract
+from .models import db, User, Expense, Budget
+
+bp = Blueprint("suggestions", __name__)
+
+@bp.route("/suggestions", methods=["GET"])
 @jwt_required()
 def get_suggestions():
     username = get_jwt_identity()
@@ -265,10 +273,13 @@ def get_suggestions():
         return jsonify({"error": "User not found"}), 404
 
     user_id = user.id
-    now = datetime.utcnow()
+    now = datetime.now(datetime.UTC)
     current_month, current_year = now.month, now.year
-    last_month = current_month - 1 if current_month > 1 else 12
-    last_month_year = current_year if current_month > 1 else current_year - 1
+    
+    # --- FIX: Correctly calculate the previous month and year ---
+    first_day_of_current_month = now.replace(day=1)
+    last_month_date = first_day_of_current_month - timedelta(days=1)
+    last_month, last_month_year = last_month_date.month, last_month_date.year
 
     # --- Utility for totals ---
     def get_category_totals(month, year):
@@ -290,21 +301,21 @@ def get_suggestions():
     # --- Compare month-to-month spending ---
     for cat in set(this_month.keys()).union(prev_month.keys()):
         curr, prev = this_month.get(cat, 0), prev_month.get(cat, 0)
+        
+        # FIX: The logic is now more streamlined and robust
         if curr > prev:
-            diff, percent = curr - prev, round((curr - prev) / prev * 100) if prev > 0 else 100
-            suggestions.append(
-                f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f})."
-            )
+            # Overspending compared to last month
+            diff = curr - prev
+            percent = round((curr - prev) / prev * 100) if prev > 0 else 100
+            suggestions.append(f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f}).")
             suggestions.append(f"💡 Suggestion: Try setting a weekly cap for {cat} expenses.")
         elif prev > curr and curr > 0:
-            suggestions.append(
-                f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month."
-            )
+            # Reduced spending
+            suggestions.append(f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month.")
             suggestions.append(f"🎯 Suggestion: Turn this into a habit — keep tracking {cat} spending.")
         elif curr == 0 and prev > 0:
-            suggestions.append(
-                f"🚫 You didn’t spend anything on {cat} this month (₹{prev:.0f} last month)."
-            )
+            # Zero spending this month
+            suggestions.append(f"🚫 You didn’t spend anything on {cat} this month (₹{prev:.0f} last month).")
             suggestions.append(f"💡 Suggestion: Did you intentionally cut {cat}? If so, great job!")
 
     # --- Overspending alerts (budget-based) ---
