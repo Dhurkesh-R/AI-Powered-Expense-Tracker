@@ -16,7 +16,7 @@ import { useTheme } from "./contexts/ThemeContext";
 import AuditLogPanel from "./components/AuditLogPanel";
 import UserSpendingSplit from "./components/UserSpendingSplit";
 import SplitSuggestionCard from "./components/SplitSuggestionCard";
-import CategoryBudgetManager from './CategoryBudgetManager';
+import CategoryBudgetManager from './components/CategoryBudgetManager';
 
 
 const Dashboard = () => {
