@@ -300,14 +300,14 @@ def get_suggestions():
             if prev > 0:
                 percent = round((curr - prev) / prev * 100)
                 if percent > 500: # Threshold for a "major increase"
-                    suggestions.append(f"⚠️ Your **{cat}** spending dramatically increased this month (₹{curr:.0f}, up from ₹{prev:.0f}).")
+                    suggestions.append(f"⚠️ Your {cat} spending dramatically increased this month (₹{curr:.0f}, up from ₹{prev:.0f}).")
                 else:
-                    suggestions.append(f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f}).")
+                    suggestions.append(f"⚠️ You spent {percent}% more on {cat} this month (₹{curr:.0f}).")
             else: # Handle the case where previous month's spending was zero
-                suggestions.append(f"⚠️ You spent ₹{curr:.0f} on **{cat}** this month (zero last month).")
+                suggestions.append(f"⚠️ You spent ₹{curr:.0f} on {cat} this month (zero last month).")
 
             suggestions.append(f"💡 Suggestion: Try setting a weekly cap for {cat} expenses.")
-            
+
         elif prev > curr and curr > 0:
             # Reduced spending
             suggestions.append(f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month.")

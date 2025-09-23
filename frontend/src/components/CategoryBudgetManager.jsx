@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { setBudget,  fetchBudgets } from '../services/api';
 
 const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
