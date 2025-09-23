@@ -296,11 +296,18 @@ def get_suggestions():
         
         # FIX: The logic is now more streamlined and robust
         if curr > prev:
-            # Overspending compared to last month
-            diff = curr - prev
-            percent = round((curr - prev) / prev * 100) if prev > 0 else 100
-            suggestions.append(f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f}).")
+            # Check for a large percentage increase
+            if prev > 0:
+                percent = round((curr - prev) / prev * 100)
+                if percent > 500: # Threshold for a "major increase"
+                    suggestions.append(f"⚠️ Your **{cat}** spending dramatically increased this month (₹{curr:.0f}, up from ₹{prev:.0f}).")
+                else:
+                    suggestions.append(f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f}).")
+            else: # Handle the case where previous month's spending was zero
+                suggestions.append(f"⚠️ You spent ₹{curr:.0f} on **{cat}** this month (zero last month).")
+
             suggestions.append(f"💡 Suggestion: Try setting a weekly cap for {cat} expenses.")
+            
         elif prev > curr and curr > 0:
             # Reduced spending
             suggestions.append(f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month.")
@@ -316,8 +323,8 @@ def get_suggestions():
         if cat in budgets:
             budget = budgets[cat]
             if spent > budget:
-                suggestions.append(f"🔥 Overspent on **{cat}** by ₹{spent - budget:.0f} (Budget: ₹{budget})")
-                suggestions.append(f"💡 Suggestion: Add a **task** to review {cat} bills.")
+                suggestions.append(f"🔥 Overspent on {cat} by ₹{spent - budget:.0f} (Budget: ₹{budget})")
+                suggestions.append(f"💡 Suggestion: Add a task to review {cat} bills.")
             elif spent >= 0.8 * budget:
                 suggestions.append(f"⚠️ You’ve used 80% of your {cat} budget (₹{spent:.0f}/₹{budget}).")
                 suggestions.append(f"💡 Suggestion: Slow down spending in {cat} for the rest of the month.")
