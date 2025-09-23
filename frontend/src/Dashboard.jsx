@@ -16,6 +16,8 @@ import { useTheme } from "./contexts/ThemeContext";
 import AuditLogPanel from "./components/AuditLogPanel";
 import UserSpendingSplit from "./components/UserSpendingSplit";
 import SplitSuggestionCard from "./components/SplitSuggestionCard";
+import CategoryBudgetManager from './CategoryBudgetManager';
+
 
 const Dashboard = () => {
   const [forecast, setForecast] = useState([]);
@@ -167,6 +169,13 @@ const Dashboard = () => {
             }
           />
         </div>
+
+        <CategoryBudgetManager
+          theme={theme}
+          token={token} // Make sure you have the user's token
+          categories={uniqueCategories} // You'll need to derive this from your expense data
+          historicalData={historical} // Pass the historical data to calculate spending
+        />
 
         {/* Budget alert */}
         <BudgetAlert data={historical} budget={monthlyBudget} theme={theme}/>

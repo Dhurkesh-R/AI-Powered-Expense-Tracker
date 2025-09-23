@@ -9,7 +9,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from config import Config
-from models import db, Expense, User
+from models import db, Expense, User, Budget
 from auth import auth_bp
 from utils import *
 
@@ -256,15 +256,7 @@ def delete_expense(id):
 
 from sqlalchemy import extract, func
 
-from flask import jsonify, Blueprint
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import datetime, timedelta
-from sqlalchemy import func, extract
-from .models import db, User, Expense, Budget
-
-bp = Blueprint("suggestions", __name__)
-
-@bp.route("/suggestions", methods=["GET"])
+@app.route("/suggestions", methods=["GET"])
 @jwt_required()
 def get_suggestions():
     username = get_jwt_identity()
@@ -708,6 +700,41 @@ def send_budget_alerts():
 
     except Exception as e:
         print("Error:", e)
+
+
+@app.route("/budgets", methods=["POST"])
+@jwt_required()
+def set_budget():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    category = data.get('category')
+    limit = data.get('limit')
+
+    if not category or limit is None:
+        return jsonify({"error": "Missing category or limit"}), 400
+
+    # Check if a budget for this category already exists
+    budget = Budget.query.filter_by(user_id=user.id, category=category).first()
+
+    if budget:
+        # Update existing budget
+        budget.limit = limit
+    else:
+        # Create a new budget
+        new_budget = Budget(
+            user_id=user.id,
+            category=category,
+            limit=limit,
+        )
+        db.session.add(new_budget)
+
+    db.session.commit()
+
+    return jsonify({"message": f"Budget for {category} set to {limit}"}), 200
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_recurring_expenses, trigger="interval", days=1)

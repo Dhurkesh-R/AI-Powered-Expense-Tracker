@@ -56,3 +56,12 @@ class ExpenseAudit(db.Model):
     user = db.relationship('User')
     expense = db.relationship('Expense')
 
+class Budget(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(100), nullable=False)
+    limit = db.Column(db.Float, nullable=False)
+    start_date = db.Column(db.DateTime, default=datetime.utcnow)
+    end_date = db.Column(db.DateTime)
+    
+    user = db.relationship('User', backref=db.backref('budgets', lazy=True))
