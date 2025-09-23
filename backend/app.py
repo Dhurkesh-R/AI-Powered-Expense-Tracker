@@ -265,7 +265,7 @@ def get_suggestions():
         return jsonify({"error": "User not found"}), 404
 
     user_id = user.id
-    now = datetime.now(datetime.UTC)
+    now = datetime.utcnow
     current_month, current_year = now.month, now.year
     
     # --- FIX: Correctly calculate the previous month and year ---
