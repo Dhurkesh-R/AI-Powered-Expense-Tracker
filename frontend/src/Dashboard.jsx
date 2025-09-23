@@ -194,7 +194,7 @@ const Dashboard = () => {
             <HistoricalTable data={historical} onExpenseUpdated={loadHistorical} theme={theme} groupId={selectedGroup}/>
             <ExpenseCharts data={historical} monthlyBudget={monthlyBudget} theme={theme}/>
             {selectedGroup && <AuditLogPanel groupId={selectedGroup} />}
-            <SmartSuggestions theme={theme} className="mb-10"/>
+            {/* <SmartSuggestions theme={theme} className="mb-10"/> */}
             <div className="flex w-full gap-4 items-stretch"> 
               {selectedGroup && (
                 <UserSpendingSplit
