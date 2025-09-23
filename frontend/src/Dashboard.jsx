@@ -30,6 +30,19 @@ const Dashboard = () => {
   const { theme, cycleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
+  const [uniqueCategories, setUniqueCategories] = useState([]);
+
+  useEffect(() => {
+    if (historical && historical.length > 0) {
+      // Get an array of all categories from the historical data
+      const allCategories = historical.map(item => item.category);
+      
+      // Use a Set to filter for unique values and convert back to an array
+      const unique = [...new Set(allCategories)];
+      
+      setUniqueCategories(unique);
+    }
+  }, [historical]);
 
   const triggerReload = () => {
     setReloadKey((k) => k + 1); // increment key -> remount chart
@@ -172,7 +185,6 @@ const Dashboard = () => {
 
         <CategoryBudgetManager
           theme={theme}
-          token={token} // Make sure you have the user's token
           categories={uniqueCategories} // You'll need to derive this from your expense data
           historicalData={historical} // Pass the historical data to calculate spending
         />

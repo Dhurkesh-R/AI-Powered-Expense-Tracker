@@ -323,3 +323,32 @@ export const updateSplitSummary = async (groupId, summary) => {
 
   return res.json();
 };
+
+export const setBudget = async (category, limit) => {
+  const res = await fetchWithRefresh(`${API_BASE}/budgets`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ category, limit }),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || "Failed to set budget");
+  }
+
+  return res.json();
+};
+
+export const fetchBudgets = async () => {
+  const res = await fetchWithRefresh(`${API_BASE}/budgets`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || "Failed to fetch budgets");
+  }
+
+  return res.json().then((json) => json.budgets);
+};

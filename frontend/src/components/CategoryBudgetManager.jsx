@@ -1,29 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { setBudget,  fetchBudgets } from '../services/api';
 
-const CategoryBudgetManager = ({ theme, token, categories, historicalData }) => {
+const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
   const [categoryBudgets, setCategoryBudgets] = useState({});
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
 
   useEffect(() => {
-    const fetchBudgets = async () => {
+    const getBudgets = async () => {
       try {
-        const response = await axios.get('/api/budgets', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const budgets = await fetchBudgets();
+        
+        // Transform the fetched array of budgets into a key-value object
         const fetchedBudgets = {};
-        response.data.budgets.forEach(b => {
+        budgets.forEach(b => {
           fetchedBudgets[b.category] = b.limit;
         });
+        
         setCategoryBudgets(fetchedBudgets);
       } catch (error) {
         console.error('Error fetching budgets:', error);
       }
     };
-    if (token) {
-      fetchBudgets();
-    }
-  }, [token]);
+
+    // Correctly call the function inside the useEffect hook
+    getBudgets();
+
+    // The dependency array is crucial.
+  }, []);
 
   const handleBudgetChange = (value) => {
     const currentCategory = categories[currentCategoryIndex];
@@ -38,13 +42,7 @@ const CategoryBudgetManager = ({ theme, token, categories, historicalData }) => 
     const budgetAmount = categoryBudgets[currentCategory] || 0;
     
     try {
-      await axios.post('/api/budgets', {
-        category: currentCategory,
-        limit: budgetAmount,
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      alert('Budget saved successfully!');
+      await setBudget(currentCategory, budgetAmount)
     } catch (error) {
       console.error('Error saving budget:', error);
       alert('Failed to save budget.');
