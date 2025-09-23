@@ -326,7 +326,7 @@ def get_suggestions():
     if not suggestions:
         suggestions.append("✅ No major spending changes. Keep it up!")
 
-    return jsonify({"smart_suggestions": suggestions})
+    return jsonify({"suggestions": suggestions})
 
 
 @app.route("/api/groups", methods=["POST"])
