@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { setBudget,  fetchBudgets } from '../services/api';
 
 const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
