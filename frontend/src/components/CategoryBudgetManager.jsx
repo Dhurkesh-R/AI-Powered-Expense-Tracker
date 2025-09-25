@@ -84,7 +84,7 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
         ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-12 px-6 rounded-2xl shadow-xl"
         : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow"
     }>
-      <h3 className="text-lg font-bold mb-2">Category Budgets</h3>
+      <h2 className="text-lg font-bold mb-2">Category Budgets</h2>
       
       {categories.length > 0 ? (
         <>
@@ -118,7 +118,11 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
             type="number"
             value={categoryBudgets[currentCategoryName] || ''}
             onChange={(e) => handleBudgetChange(e.target.value)}
-            className="border p-2 rounded w-full dark:bg-gray-800"
+            className={
+              theme === "gradient"
+                  ? "border p-2 rounded w-full bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 rounded-xl shadow"
+                  : "border p-2 rounded w-full dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600"
+            }
           />
           <button 
             onClick={handleSaveBudget} 
