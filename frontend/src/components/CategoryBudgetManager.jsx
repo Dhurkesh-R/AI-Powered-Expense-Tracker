@@ -91,7 +91,7 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
           {/* Swiping UI */}
           <div className="flex justify-center items-center mb-4">
             <button onClick={handleSwipeLeft}>&lt;</button>
-            <h4 className="text-xl font-semibold">
+            <h4 className="text-xl mx-2 font-semibold">
               {currentCategoryName}
             </h4>
             <button onClick={handleSwipeRight}>&gt;</button>
@@ -111,7 +111,7 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
           )}
 
           {/* Budget Input and Save Button */}
-          <label className="block mb-2 text-sm font-medium">
+          <label className="block my-2 text-sm font-medium">
             Set Budget (₹):
           </label>
           <input
