@@ -744,6 +744,7 @@ def set_budget():
     return jsonify({"message": f"Budget for {category} set to {limit}"}), 200
 
 @app.route("/budgets", methods=["GET"])
+@jwt_required
 def get_budgets():
     """
     Fetches all budget limits and details for the authenticated user.
