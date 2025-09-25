@@ -5,28 +5,26 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
   const [categoryBudgets, setCategoryBudgets] = useState({});
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
 
+  // 1. Wrap the fetch logic in useCallback so it can be safely used in handleSaveBudget
+  const getBudgets = useCallback(async () => {
+    try {
+      const budgets = await fetchBudgets();
+      
+      const fetchedBudgets = {};
+      budgets.forEach(b => {
+        fetchedBudgets[b.category] = b.limit;
+      });
+      
+      setCategoryBudgets(fetchedBudgets);
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
+    }
+  }, []); // Dependencies are empty since fetchBudgets and setCategoryBudgets are stable
+
+  // 2. Initial fetch on component mount
   useEffect(() => {
-    const getBudgets = async () => {
-      try {
-        const budgets = await fetchBudgets();
-        
-        // Transform the fetched array of budgets into a key-value object
-        const fetchedBudgets = {};
-        budgets.forEach(b => {
-          fetchedBudgets[b.category] = b.limit;
-        });
-        
-        setCategoryBudgets(fetchedBudgets);
-      } catch (error) {
-        console.error('Error fetching budgets:', error);
-      }
-    };
-
-    // Correctly call the function inside the useEffect hook
     getBudgets();
-
-    // The dependency array is crucial.
-  }, []);
+  }, [getBudgets]); // Dependency array includes getBudgets, but useCallback makes it stable
 
   const handleBudgetChange = (value) => {
     const currentCategory = categories[currentCategoryIndex];
@@ -41,7 +39,14 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
     const budgetAmount = categoryBudgets[currentCategory] || 0;
     
     try {
+      // Save the budget to the backend
       await setBudget(currentCategory, budgetAmount)
+      
+      // 3. 🚨 Key Fix: Re-fetch the budgets after a successful save.
+      // This ensures the state is updated with the officially saved value.
+      await getBudgets(); 
+      alert('Budget saved successfully!');
+
     } catch (error) {
       console.error('Error saving budget:', error);
       alert('Failed to save budget.');
@@ -84,7 +89,7 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
       {categories.length > 0 ? (
         <>
           {/* Swiping UI */}
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-center items-center mb-4">
             <button onClick={handleSwipeLeft}>&lt;</button>
             <h4 className="text-xl font-semibold">
               {currentCategoryName}
@@ -94,7 +99,11 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
           
           {/* Budget Alert for the current category */}
           {budgetLimit > 0 && (
-            <div className={`p-2 rounded-lg text-white mb-4 ${overBudget ? 'bg-red-500' : 'bg-green-500'}`}>
+            <div className={
+              theme === "gradient"
+                  ? `p-4 rounded shadow ${overBudget ? 'bg-red-900' : 'bg-green-900'}`
+                  : `p-4 rounded shadow ${overBudget ? 'bg-red-100 dark:bg-red-900' : 'bg-green-100 dark:bg-green-900'}`
+              }>
               <p className="text-sm">
                 Spent ₹{totalSpentForCategory.toFixed(2)} of ₹{budgetLimit.toFixed(2)}
               </p>
