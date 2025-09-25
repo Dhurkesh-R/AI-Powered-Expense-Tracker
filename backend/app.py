@@ -743,6 +743,35 @@ def set_budget():
 
     return jsonify({"message": f"Budget for {category} set to {limit}"}), 200
 
+@app.route("/budgets", methods=["GET"])
+def get_budgets():
+    """
+    Fetches all budget limits and details for the authenticated user.
+    Frontend endpoint: GET /api/budgets
+    """
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # 1. Query the database for all Budget entries belonging to the user
+    budgets = Budget.query.filter_by(user_id=user.id).all()
+    
+    # 2. Convert SQLAlchemy objects to a list of dictionaries for JSON serialization
+    budgets_data = [
+        {
+            "id": budget.id,
+            "category": budget.category,
+            "limit": float(budget.limit),  # Ensure it's a standard float for JSON
+            "start_date": budget.start_date.isoformat(),
+            "end_date": budget.end_date.isoformat() if budget.end_date else None,
+        }
+        for budget in budgets
+    ]
+
+    # 3. Return the data in the format the frontend (fetchBudgets) expects: {"budgets": [...] }
+    return jsonify({"budgets": budgets_data}), 200
+
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_recurring_expenses, trigger="interval", days=1)
 scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)
