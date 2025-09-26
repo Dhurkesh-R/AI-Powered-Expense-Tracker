@@ -80,7 +80,7 @@ const GroupOptions = ({ selectedGroup, setSelectedGroup, theme, user }) => {
           groupId={selectedGroup}
           currentUser={user} // from logged-in user
           onClose={() => window.location.reload()}
-          theme="gradient"
+          theme={theme}
         />
       )}
     </div>
