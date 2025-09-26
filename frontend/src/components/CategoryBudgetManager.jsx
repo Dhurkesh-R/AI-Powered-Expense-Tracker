@@ -84,7 +84,7 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
         ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-12 px-6 rounded-2xl shadow-xl"
         : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow"
     }>
-      <h2 className="text-lg font-bold mb-2">Category Budgets</h2>
+      <h2 className="text-xl font-bold mb-2">💷Category Budgets</h2>
       
       {categories.length > 0 ? (
         <>

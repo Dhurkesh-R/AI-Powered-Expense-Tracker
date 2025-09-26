@@ -14,7 +14,7 @@ const ForecastChart = ({ data, theme }) => {
         ? "bg-gradient-to-r from-blue-900/80 via-gray-900/80 to-indigo-900/80 border border-blue-700 rounded-xl px-8 py-6 shadow-lg mb-6 transition-all duration-300 text-white"
         : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow"
     }>
-      <h2 className="text-lg font-semibold mb-2">Forecast</h2>
+      <h2 className="text-lg font-semibold mb-2">📈Forecast</h2>
       <ResponsiveContainer width="100%" height={300}>
         <AreaChart data={data}>
           <XAxis

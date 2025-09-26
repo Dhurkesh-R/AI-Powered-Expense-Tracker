@@ -268,7 +268,7 @@ def get_suggestions():
     now = datetime.utcnow()
     current_month, current_year = now.month, now.year
     
-    # --- FIX: Correctly calculate the previous month and year ---
+    # --- Correctly calculate the previous month and year ---
     first_day_of_current_month = now.replace(day=1)
     last_month_date = first_day_of_current_month - timedelta(days=1)
     last_month, last_month_year = last_month_date.month, last_month_date.year
@@ -289,45 +289,67 @@ def get_suggestions():
     prev_month = get_category_totals(last_month, last_month_year)
 
     suggestions = []
+    # Set to track categories that received a specific budget-based alert
+    budgeted_categories_alerted = set()
 
-    # --- Compare month-to-month spending ---
-    for cat in set(this_month.keys()).union(prev_month.keys()):
-        curr, prev = this_month.get(cat, 0), prev_month.get(cat, 0)
-        
-        # FIX: The logic is now more streamlined and robust
-        if curr > prev:
-            # Check for a large percentage increase
-            if prev > 0:
-                percent = round((curr - prev) / prev * 100)
-                if percent > 500: # Threshold for a "major increase"
-                    suggestions.append(f"⚠️ Your {cat} spending dramatically increased this month (₹{curr:.0f}, up from ₹{prev:.0f}).")
-                else:
-                    suggestions.append(f"⚠️ You spent {percent}% more on {cat} this month (₹{curr:.0f}).")
-            else: # Handle the case where previous month's spending was zero
-                suggestions.append(f"⚠️ You spent ₹{curr:.0f} on {cat} this month (zero last month).")
+    # --- Budget-based alerts (Priority 1: Most specific alerts) ---
+    # FIX: Convert budget limits to float immediately for consistent arithmetic and formatting
+    budgets = {b.category: float(b.limit) for b in Budget.query.filter_by(user_id=user_id).all()}
 
-            suggestions.append(f"💡 Suggestion: Try setting a weekly cap for {cat} expenses.")
-
-        elif prev > curr and curr > 0:
-            # Reduced spending
-            suggestions.append(f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month.")
-            suggestions.append(f"🎯 Suggestion: Turn this into a habit — keep tracking {cat} spending.")
-        elif curr == 0 and prev > 0:
-            # Zero spending this month
-            suggestions.append(f"🚫 You didn’t spend anything on {cat} this month (₹{prev:.0f} last month).")
-            suggestions.append(f"💡 Suggestion: Did you intentionally cut {cat}? If so, great job!")
-
-    # --- Overspending alerts (budget-based) ---
-    budgets = {b.category: b.limit for b in Budget.query.filter_by(user_id=user_id).all()}
     for cat, spent in this_month.items():
         if cat in budgets:
             budget = budgets[cat]
+            
+            # 1. Check for OVERSPENT (spent > budget)
             if spent > budget:
-                suggestions.append(f"🔥 Overspent on {cat} by ₹{spent - budget:.0f} (Budget: ₹{budget})")
-                suggestions.append(f"💡 Suggestion: Add a task to review {cat} bills.")
+                suggestions.append(f"🔥 Overspent on **{cat}** by ₹{spent - budget:.0f} (Budget: ₹{budget:.0f})")
+                suggestions.append(f"💡 Suggestion: Add a **task** to review {cat} bills.")
+                budgeted_categories_alerted.add(cat)
+
+            # 2. Check for 100% Usage (spent == budget) - handles the Travel edge case
+            elif spent >= budget: # This check covers spent == budget, since spent > budget is handled above
+                suggestions.append(f"🚨 You have used 100% of your **{cat}** budget (₹{spent:.0f}/₹{budget:.0f}).")
+                suggestions.append(f"💡 Suggestion: Stop spending in {cat} immediately or consider increasing the budget.")
+                budgeted_categories_alerted.add(cat)
+                
+            # 3. Check for 80% Warning (spent >= 80% and < 100% of budget)
             elif spent >= 0.8 * budget:
-                suggestions.append(f"⚠️ You’ve used 80% of your {cat} budget (₹{spent:.0f}/₹{budget}).")
+                percent_used = round(spent / budget * 100)
+                suggestions.append(f"⚠️ You’ve used {percent_used}% of your **{cat}** budget (₹{spent:.0f}/₹{budget:.0f}).")
                 suggestions.append(f"💡 Suggestion: Slow down spending in {cat} for the rest of the month.")
+                budgeted_categories_alerted.add(cat)
+
+    # --- Compare month-to-month spending (Priority 2: Only for non-budgeted or non-alerted categories) ---
+    for cat in set(this_month.keys()).union(prev_month.keys()):
+        # FIX: Skip if a budget-based alert was already given for this category
+        if cat in budgeted_categories_alerted:
+            continue
+            
+        curr, prev = this_month.get(cat, 0), prev_month.get(cat, 0)
+        
+        # Spending Increased
+        if curr > prev:
+            # Check for a large percentage increase (as implemented before)
+            if prev > 0:
+                percent = round((curr - prev) / prev * 100)
+                if percent > 500: # Use the threshold to generalize massive spikes
+                    suggestions.append(f"⚠️ Your **{cat}** spending dramatically increased this month (₹{curr:.0f}, up from ₹{prev:.0f}).")
+                else:
+                    suggestions.append(f"⚠️ You spent {percent}% more on **{cat}** this month (₹{curr:.0f}).")
+            else: # Case: Spending from zero
+                suggestions.append(f"⚠️ You spent ₹{curr:.0f} on **{cat}** this month (zero last month).")
+
+            suggestions.append(f"💡 Suggestion: Try setting a weekly cap for {cat} expenses.")
+
+        # Spending Reduced (Still show for categories without budget alerts)
+        elif prev > curr and curr > 0:
+            suggestions.append(f"✅ You reduced your {cat} spending by ₹{prev - curr:.0f} this month.")
+            suggestions.append(f"🎯 Suggestion: Turn this into a habit — keep tracking {cat} spending.")
+            
+        # Zero spending this month (Still show for categories without budget alerts)
+        elif curr == 0 and prev > 0:
+            suggestions.append(f"🚫 You didn’t spend anything on {cat} this month (₹{prev:.0f} last month).")
+            suggestions.append(f"💡 Suggestion: Did you intentionally cut {cat}? If so, great job!")
 
     # --- No suggestions? ---
     if not suggestions:
