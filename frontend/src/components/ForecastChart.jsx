@@ -8,6 +8,14 @@ const formatDate = (str) => {
 };
 
 const ForecastChart = ({ data, theme }) => {
+  
+  // 🚨 FIX: Process the incoming data to ensure 'yhat' never goes below zero.
+  // We use Math.max(0, value) to set the floor at 0.
+  const cleanedData = data.map(item => ({
+    ...item,
+    yhat: Math.max(0, item.yhat)
+  }));
+  
   return (
     <div className={
       theme === "gradient"
@@ -16,7 +24,8 @@ const ForecastChart = ({ data, theme }) => {
     }>
       <h2 className="text-lg font-semibold mb-2">📈Forecast</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <AreaChart data={data}>
+        {/* Use the cleanedData array here */}
+        <AreaChart data={cleanedData}>
           <XAxis
             dataKey="ds"
             tickFormatter={formatDate}
@@ -24,6 +33,7 @@ const ForecastChart = ({ data, theme }) => {
             tick={{ fill: theme === "gradient" || theme === "dark" ? "#fff" : "#222", fontSize: 12 }}
           />
           <YAxis
+            // The domain is already set correctly to start at 0
             domain={[0, 'auto']}
             tick={{ fill: theme === "gradient" || theme === "dark" ? "#fff" : "#222", fontSize: 12 }}
           />
@@ -36,7 +46,14 @@ const ForecastChart = ({ data, theme }) => {
               border: "none"
             }}
           />
-          <Area type="monotone" dataKey="yhat" stroke="#3b82f6" fill="#93c5fd" />
+          <Area 
+            type="monotone" 
+            dataKey="yhat" 
+            stroke="#3b82f6" 
+            fill="#93c5fd" 
+            // Ensures the area fill starts cleanly at the baseline (0)
+            baseValue={0} 
+          />
         </AreaChart>
       </ResponsiveContainer>
     </div>
