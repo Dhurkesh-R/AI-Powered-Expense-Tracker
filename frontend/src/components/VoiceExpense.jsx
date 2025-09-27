@@ -20,7 +20,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
     const match = text.match(/\d+(\.\d+)?/);
     return match ? parseFloat(match[0]) : 0;
   };
-  
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
@@ -168,7 +168,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
         {/* Voice Button */}
         <button
         type="button"
-        onClick={startListening}
+        onClick={() => startListening()}
         className={`
               col-span-1 md:col-span-2 w-16 h-16 rounded-full shadow-lg transition-all duration-300 transform 
               hover:scale-105 active:scale-95 flex items-center justify-center 
