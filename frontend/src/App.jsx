@@ -23,6 +23,7 @@ const App = () => {
                 <Dashboard />
               </PrivateRoute>
             } />
+            <ToastContainer position="top-right" autoClose={5000} />
           </Routes>
         </AuthProvider>
       </Router>

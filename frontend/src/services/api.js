@@ -352,3 +352,17 @@ export const fetchBudgets = async () => {
 
   return res.json().then((json) => json.budgets);
 };
+
+export const fetchNotifications = async () => {
+  const res = await fetchWithRefresh(`${API_BASE}/notifications`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.detail || "Failed to fetch notifications");
+  }
+
+  return res.json().then((json) => json.notifications);
+};

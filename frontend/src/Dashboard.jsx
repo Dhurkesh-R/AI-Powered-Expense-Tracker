@@ -32,6 +32,23 @@ const Dashboard = () => {
   const [reloadKey, setReloadKey] = useState(0);
   const [uniqueCategories, setUniqueCategories] = useState([]);
 
+  useEffect(() => { const loadNotifications = async () => {
+    try { 
+      const data = await fetchNotifications();
+      data.notifications.forEach((note) => {
+        toast.info(note); 
+      }); 
+    } catch (err) {
+      console.error("Notification fetch failed", err);
+    } 
+  };
+    loadNotifications(); 
+    // Poll every 1 min (optional) 
+    const interval = setInterval(loadNotifications, 60000); 
+    return () => clearInterval(interval); 
+  }, []);
+
+
   useEffect(() => {
     if (historical && historical.length > 0) {
       // Get an array of all categories from the historical data

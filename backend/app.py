@@ -795,6 +795,16 @@ def get_budgets():
     # 3. Return the data in the format the frontend (fetchBudgets) expects: {"budgets": [...] }
     return jsonify({"budgets": budgets_data}), 200
 
+@app.route("/notifications", methods=["GET"])
+@jwt_required()
+def get_notifications():
+    user_id = get_jwt_identity() 
+    overspending_alerts = check_overspending(user_id) 
+    recurring_alerts = check_recurring_reminders(user_id) 
+    all_alerts = (overspending_alerts or []) + (recurring_alerts or []) 
+    
+    return jsonify({"notifications": all_alerts})
+
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=check_recurring_expenses, trigger="interval", days=1)
 scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)

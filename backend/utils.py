@@ -77,3 +77,42 @@ def log_expense_action(expense_id, user_id, action):
     )
     db.session.add(audit)
     db.session.commit()
+
+from datetime import datetime
+from models import Expense, Budget, db
+
+def check_overspending(user_id):
+    today = datetime.today()
+    month_start = datetime(today.year, today.month, 1) 
+    expenses = Expense.query.filter( Expense.user_id == user_id, Expense.ds >= month_start ).all() 
+    total_spent = sum(e.amount for e in expenses) 
+    budget = Budget.query.filter_by(user_id=user_id).first() 
+    if not budget: 
+        return None # no budget set
+        
+    percent = (total_spent / budget.monthly_budget) * 100 
+    alerts = [] 
+    
+    # overspending threshold
+    if percent >= 80:
+        alerts.append(f"⚠️ You've already spent {percent:.1f}% of your monthly budget!") 
+        
+    # rapid spending in first 5 days
+    if today.day <= 5 and percent >= 50:
+        alerts.append("🔥 You're spending too fast! Over 50% of your budget gone in the first 5 days.") 
+        
+    return alerts
+
+def check_recurring_reminders(user_id):
+    today = datetime.today().date()
+    recurring_expenses = Expense.query.filter_by(user_id=user_id, is_recurring=True).all()
+    
+    reminders = [] 
+    
+    for exp in recurring_expenses:
+        if exp.recurring_interval == "monthly" and exp.ds.day == today.day:
+            reminders.append(f"🔔 Reminder: {exp.description} ({exp.amount}) is due today.")
+        if exp.recurring_interval == "weekly" and exp.ds.weekday() == today.weekday():
+            reminders.append(f"🔔 Weekly reminder: {exp.description} ({exp.amount}) is due today.")
+    
+    return reminders
