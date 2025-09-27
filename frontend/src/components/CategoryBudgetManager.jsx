@@ -4,6 +4,9 @@ import { setBudget,  fetchBudgets } from '../services/api';
 const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
   const [categoryBudgets, setCategoryBudgets] = useState({});
   const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   // 1. Wrap the fetch logic in useCallback so it can be safely used in handleSaveBudget
   const getBudgets = useCallback(async () => {
@@ -39,15 +42,20 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
     const budgetAmount = categoryBudgets[currentCategory] || 0;
     
     try {
+      setLoading(true)
       // Save the budget to the backend
       await setBudget(currentCategory, budgetAmount)
       
       // 3. 🚨 Key Fix: Re-fetch the budgets after a successful save.
       // This ensures the state is updated with the officially saved value.
-      await getBudgets(); 
+      await getBudgets();
+      setMessage("Budget saved successfully!");
 
     } catch (error) {
       console.error('Error saving budget:', error);
+      setError(err.message || "Error saving budget");
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -125,13 +133,16 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
           <button 
             onClick={handleSaveBudget} 
             className="mt-4 w-full bg-blue-500 text-white p-2 rounded"
+            disabled={loading}
           >
-            Set Budget
+            {loading ? "Setting..." : "Set Budget"}
           </button>
         </>
       ) : (
         <p>No categories available to set budgets.</p>
       )}
+      {message && <p className="text-green-600 mt-2">{message}</p>}
+      {error && <p className="text-red-600 mt-2">{error}</p>}
     </div>
   );
 };

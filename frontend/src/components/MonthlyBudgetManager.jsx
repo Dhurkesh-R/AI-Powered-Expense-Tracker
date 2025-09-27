@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { setMonthlyBudget, fetchMonthlyBudget } from "../services/api";
 
-const MonthlyBudgetManager = ({ theme, historicalData }) => {
+const MonthlyBudgetManager = ({ theme }) => {
   const [monthlyBudget, setMonthlyBudgetState] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   // Fetch monthly budget from backend
   const getBudget = useCallback(async () => {
@@ -24,10 +27,14 @@ const MonthlyBudgetManager = ({ theme, historicalData }) => {
 
   const handleSaveBudget = async () => {
     try {
+      setLoading(true)
       await setMonthlyBudget(monthlyBudget);
       await getBudget(); // refresh after saving
+      setMessage("Budget saved successfully!")
     } catch (error) {
+      setLoading(false)
       console.error("Error saving monthly budget:", error);
+      setError(error.message || "Error saving budget")
     }
   };
 
@@ -56,9 +63,12 @@ const MonthlyBudgetManager = ({ theme, historicalData }) => {
       <button
         onClick={handleSaveBudget}
         className="mt-4 w-full bg-blue-500 text-white p-2 rounded"
+        disabled={loading}
       >
-        Set Monthly Budget
+        {loading ? "Setting..." : "Set Monthly Budget"}
       </button>
+      {message && <p className="text-green-600 mt-2">{message}</p>}
+      {error && <p className="text-red-600 mt-2">{error}</p>}
     </div>
   );
 };

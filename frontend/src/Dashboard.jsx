@@ -30,7 +30,7 @@ const Dashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [uniqueCategories, setUniqueCategories] = useState([]);
-  const [monthlyBudget, setMonthlyBudgetState] = useState(0);
+  const [monthlyBudget, setMonthlyBudgetState] = useState(null);
 
   // Fetch monthly budget from backend
   const getBudget = useCallback(async () => {
@@ -193,7 +193,7 @@ const Dashboard = () => {
           <ForecastChart data={forecast} theme={theme}/>
         )}
 
-        <MonthlyBudgetManager theme={theme} historicalData={historical} />
+        <MonthlyBudgetManager theme={theme} />
 
         <CategoryBudgetManager
           theme={theme}
