@@ -6,6 +6,8 @@ const RulesManager = ({ theme }) => {
   const [keyword, setKeyword] = useState("");
   const [category, setCategory] = useState("");
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadRules();
