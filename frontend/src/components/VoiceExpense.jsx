@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { addExpense, predictCategory } from "../services/api";
+import { HiMicrophone } from "react-icons/hi";
 
 const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
   const [form, setForm] = useState({
@@ -191,7 +192,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
                 />
             ) : (
                 // Show a standard icon when not listening (ready state)
-                <MicrophoneIcon className="w-8 h-8" />
+                <HiMicrophone className="w-8 h-8" />
             )}
           </button>
         </div> 
