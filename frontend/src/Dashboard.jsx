@@ -20,7 +20,7 @@ import CategoryBudgetManager from './components/CategoryBudgetManager';
 import MonthlyBudgetManager from "./components/MonthlyBudgetManager";
 import EmailModal from "./components/EmailModal";
 import RulesManager from "./components/RulesManager";
-import VoiceExpense from "./components/VoiceExpense";
+import AddExpenseForm from "./components/VoiceExpense";
 
 
 const Dashboard = () => {
