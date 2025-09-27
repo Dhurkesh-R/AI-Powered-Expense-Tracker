@@ -401,3 +401,31 @@ export const registerEmail = async (email) => {
   });
   return res;
 };
+
+// ✅ Fetch all rules
+export const fetchRules = async () => {
+  const res = await fetch(`${API_BASE}/rules`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return await res.json(); // returns { status, rules }
+};
+
+// ✅ Add a new rule
+export const addRule = async (keyword, category) => {
+  const res = await fetch(`${API_BASE}/rules`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ keyword, category }),
+  });
+  return await res.json(); // returns { status, message }
+};
+
+// ✅ Delete a rule
+export const deleteRule = async (ruleId) => {
+  const res = await fetch(`${API_BASE}/rules/${ruleId}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  return await res.json(); // returns { status, message }
+};

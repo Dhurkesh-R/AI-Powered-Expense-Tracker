@@ -68,5 +68,12 @@ class Budget(db.Model):
     
     user = db.relationship('User', backref=db.backref('budgets', lazy=True))
 
+class Rule(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    keyword = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(100), nullable=False)  # directly store category string
+
+    user = db.relationship('User', backref=db.backref('rules', lazy=True))
 
     

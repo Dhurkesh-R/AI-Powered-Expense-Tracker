@@ -19,6 +19,7 @@ import SplitSuggestionCard from "./components/SplitSuggestionCard";
 import CategoryBudgetManager from './components/CategoryBudgetManager';
 import MonthlyBudgetManager from "./components/MonthlyBudgetManager";
 import EmailModal from "./components/EmailModal";
+import RulesManager from "./components/RulesManager";
 
 
 const Dashboard = () => {
@@ -253,6 +254,7 @@ const Dashboard = () => {
           </>
         )}
         <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>
+        <RulesManager theme={theme}/>
       </div>
     </div>
   );

@@ -79,7 +79,7 @@ def log_expense_action(expense_id, user_id, action):
     db.session.commit()
 
 from datetime import datetime
-from models import Expense, Budget, db
+from models import Expense, Budget, db, Rule
 
 def check_overspending(user_id):
     today = datetime.today()
@@ -116,3 +116,10 @@ def check_recurring_reminders(user_id):
             reminders.append(f"🔔 Weekly reminder: {exp.description} ({exp.amount}) is due today.")
     
     return reminders
+
+def apply_rules(user_id, description):
+    rules = Rule.query.filter_by(user_id=user_id).all()
+    for rule in rules:
+        if rule.keyword.lower() in description.lower():
+            return rule.category  # since it's just a string
+    return None

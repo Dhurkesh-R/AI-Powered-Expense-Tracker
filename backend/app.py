@@ -134,6 +134,8 @@ def historical():
 @jwt_required()
 def predict_category():
     try:
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
         data = request.get_json()
         description = data.get('description', '')
 
@@ -142,12 +144,80 @@ def predict_category():
 
         X_test = vectorizer.transform([description])
         prediction = categorizer_model.predict(X_test)[0]
+        category = apply_rules(user_id=user.id, description=description)
 
-        return jsonify({'status': 'success', 'category': prediction})
+        return jsonify({'status': 'success', 'category': category if category else prediction})
 
     except Exception as e:
         print("[ERROR] /predict-category failed:", e)
         return jsonify({'status': 'error', 'message': str(e)}), 500
+    
+# Add Rule
+@app.route('/rules', methods=['POST'])
+@jwt_required()
+def add_rule():
+    try:
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+
+        data = request.get_json()
+        keyword = data.get("keyword")
+        category = data.get("category")
+
+        if not keyword or not category:
+            return jsonify({"status": "error", "message": "Keyword and category are required"}), 400
+
+        new_rule = Rule(user_id=user.id, keyword=keyword, category=category)
+        db.session.add(new_rule)
+        db.session.commit()
+
+        return jsonify({"status": "success", "message": "Rule added successfully"})
+
+    except Exception as e:
+        print("[ERROR] /rules POST failed:", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# Get all rules
+@app.route('/rules', methods=['GET'])
+@jwt_required()
+def get_rules():
+    try:
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+
+        rules = Rule.query.filter_by(user_id=user.id).all()
+        rules_list = [{"id": r.id, "keyword": r.keyword, "category": r.category} for r in rules]
+
+        return jsonify({"status": "success", "rules": rules_list})
+
+    except Exception as e:
+        print("[ERROR] /rules GET failed:", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# Delete a rule
+@app.route('/rules/<int:rule_id>', methods=['DELETE'])
+@jwt_required()
+def delete_rule(rule_id):
+    try:
+        current_user = get_jwt_identity()
+        user = User.query.filter_by(username=current_user).first()
+
+        rule = Rule.query.filter_by(id=rule_id, user_id=user.id).first()
+        if not rule:
+            return jsonify({"status": "error", "message": "Rule not found"}), 404
+
+        db.session.delete(rule)
+        db.session.commit()
+
+        return jsonify({"status": "success", "message": "Rule deleted successfully"})
+
+    except Exception as e:
+        print("[ERROR] /rules DELETE failed:", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
 
 
 @app.route('/add-expense', methods=['POST'])
