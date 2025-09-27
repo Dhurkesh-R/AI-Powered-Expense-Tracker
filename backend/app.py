@@ -700,37 +700,6 @@ def update_split_summary(group_id):
     return jsonify({"message": "Summary updated successfully"})
 
 
-
-def check_recurring_expenses():
-    today = datetime.today().date()
-    recurring_expenses = Expense.query.filter_by(is_recurring=True).all()
-    for expense in recurring_expenses:
-        if expense.recurring_interval == "monthly":
-            if expense.ds.day == today.day:
-                print(f"🔔 Reminder: Recurring expense due today - {expense.description}")
-
-def send_budget_alerts():
-    try:
-        with app.app_context():
-            users = User.query.all()
-            for user in users:
-                expenses = Expense.query.filter_by(user_id=user.id).all()
-                monthly_total = sum(e.amount for e in expenses if e.ds.month == datetime.now().month)
-
-                if monthly_total > user.budget:
-                    msg = Message(
-                        subject="🚨 Monthly Budget Alert",
-                        sender=app.config['MAIL_USERNAME'],
-                        recipients=[user.email],
-                        body=f"Hi {user.username}, you've spent ₹{monthly_total} this month, exceeding your budget of ₹{user.budget}!"
-                    )
-                    mail.send(msg)
-                    print("Mail sent successfully!")
-
-    except Exception as e:
-        print("Error:", e)
-
-
 @app.route("/budgets", methods=["POST"])
 @jwt_required()
 def set_budget():
@@ -860,8 +829,85 @@ def get_notifications():
     
     return jsonify({"notifications": all_alerts})
 
+@app.route("/register-email", methods=["POST"])
+@jwt_required()
+def register_email():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    email = data.get("email")
+    dont_show = data.get("dont_show_again", False)
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    user = User.query.get(user_id)
+    user.email = email
+    user.dont_show_email_modal = dont_show
+    db.session.commit()
+
+    return jsonify({"message": "Email registered successfully!"})
+
+
+from datetime import datetime
+from flask_mail import Message
+from app import mail, app
+from models import Expense, User
+
+def send_recurring_expense_alerts():
+    with app.app_context():
+        today = datetime.today().date()
+        recurring_expenses = Expense.query.filter_by(is_recurring=True).all()
+
+        for expense in recurring_expenses:
+            # Monthly recurring
+            if expense.recurring_interval == "monthly" and expense.ds.day == today.day:
+                user = User.query.get(expense.user_id)
+                if user.email:  # only send if user has registered email
+                    msg = Message(
+                        subject="🔔 Recurring Expense Reminder",
+                        sender=app.config['MAIL_USERNAME'],
+                        recipients=[user.email],
+                        body=f"Hi {user.username}, reminder: your recurring expense '{expense.description}' of ₹{expense.amount} is due today."
+                    )
+                    mail.send(msg)
+                    print(f"Email sent to {user.email} for {expense.description}")
+            # Weekly recurring
+            elif expense.recurring_interval == "weekly" and expense.ds.weekday() == today.weekday():
+                user = User.query.get(expense.user_id)
+                if user.email:
+                    msg = Message(
+                        subject="🔔 Weekly Recurring Expense Reminder",
+                        sender=app.config['MAIL_USERNAME'],
+                        recipients=[user.email],
+                        body=f"Hi {user.username}, reminder: your weekly recurring expense '{expense.description}' of ₹{expense.amount} is due today."
+                    )
+                    mail.send(msg)
+                    print(f"Email sent to {user.email} for {expense.description}")
+
+
+def send_budget_alerts():
+    try:
+        with app.app_context():
+            users = User.query.all()
+            for user in users:
+                expenses = Expense.query.filter_by(user_id=user.id).all()
+                monthly_total = sum(e.amount for e in expenses if e.ds.month == datetime.now().month)
+
+                if monthly_total > user.budget:
+                    msg = Message(
+                        subject="🚨 Monthly Budget Alert",
+                        sender=app.config['MAIL_USERNAME'],
+                        recipients=[user.email],
+                        body=f"Hi {user.username}, you've spent ₹{monthly_total} this month, exceeding your budget of ₹{user.budget}!"
+                    )
+                    mail.send(msg)
+                    print("Mail sent successfully!")
+
+    except Exception as e:
+        print("Error:", e)
+
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=check_recurring_expenses, trigger="interval", days=1)
+scheduler.add_job(func=send_recurring_expense_alerts, trigger="interval", days=1)
 scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)
 scheduler.start()
 

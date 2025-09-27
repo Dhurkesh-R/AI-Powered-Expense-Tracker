@@ -8,6 +8,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(512), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    dont_show_email_modal = db.Column(db.Boolean, default=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -65,3 +67,6 @@ class Budget(db.Model):
     end_date = db.Column(db.DateTime)
     
     user = db.relationship('User', backref=db.backref('budgets', lazy=True))
+
+
+    
