@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ForecastChart from "./components/ForecastChart";
 import HistoricalTable from "./components/HistoricalTable";
 import BudgetAlert from "./components/BudgetAlert";
-import { fetchForecast, fetchHistorical, getGroupExpenses, fetchNotifications } from "./services/api";
+import { fetchForecast, fetchHistorical, getGroupExpenses, fetchNotifications, fetchMonthlyBudget } from "./services/api";
 import { useAuth } from "./contexts/AuthContext";
 import AddExpenseForm from "./components/AddExpenseForm";
 import EmptyState from "./components/EmptyState";
@@ -24,13 +24,27 @@ const Dashboard = () => {
   const [historical, setHistorical] = useState([]);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [monthlyBudget, setMonthlyBudget] = useState(100000);
   const { user, logout } = useAuth();
   const [selectedGroup, setSelectedGroup] = useState(""); // "" = personal
   const { theme, cycleTheme } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [uniqueCategories, setUniqueCategories] = useState([]);
+  const [monthlyBudget, setMonthlyBudgetState] = useState(0);
+
+  // Fetch monthly budget from backend
+  const getBudget = useCallback(async () => {
+    try {
+      const data = await fetchMonthlyBudget();
+      setMonthlyBudgetState(data.limit || 0);
+    } catch (error) {
+      console.error("Error fetching monthly budget:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    getBudget();
+  }, [getBudget]);
 
   useEffect(() => { const loadNotifications = async () => {
     try { 
