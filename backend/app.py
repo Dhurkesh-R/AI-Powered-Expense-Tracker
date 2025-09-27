@@ -795,6 +795,56 @@ def get_budgets():
     # 3. Return the data in the format the frontend (fetchBudgets) expects: {"budgets": [...] }
     return jsonify({"budgets": budgets_data}), 200
 
+@app.route("/budget", methods=["POST"])
+@jwt_required()
+def set_monthly_budget():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.get_json()
+    limit = data.get("limit")
+
+    if limit is None:
+        return jsonify({"error": "Missing limit"}), 400
+
+    # Check if user already has a monthly budget
+    budget = Budget.query.filter_by(user_id=user.id).first()
+
+    if budget:
+        budget.limit = limit  # update
+    else:
+        budget = Budget(user_id=user.id, category="Monthly", limit=limit)
+        db.session.add(budget)
+
+    db.session.commit()
+    return jsonify({"message": f"Monthly budget set to {limit}"}), 200
+
+
+# ---------------------------
+# Get Monthly Budget
+# ---------------------------
+@app.route("/budget", methods=["GET"])
+@jwt_required()
+def get_monthly_budget():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    budget = Budget.query.filter_by(user_id=user.id).first()
+    if not budget:
+        return jsonify({"error": "No monthly budget set"}), 404
+
+    return jsonify({
+        "id": budget.id,
+        "limit": float(budget.limit),
+        "start_date": budget.start_date.isoformat(),
+        "end_date": budget.end_date.isoformat() if budget.end_date else None
+    }), 200
+
+
 @app.route("/notifications", methods=["GET"])
 @jwt_required()
 def get_notifications():
