@@ -849,9 +849,13 @@ def get_monthly_budget():
 @app.route("/notifications", methods=["GET"])
 @jwt_required()
 def get_notifications():
-    user_id = get_jwt_identity() 
-    overspending_alerts = check_overspending(user_id) 
-    recurring_alerts = check_recurring_reminders(user_id) 
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    overspending_alerts = check_overspending(user_id=user.id) 
+    recurring_alerts = check_recurring_reminders(user_id=user.id) 
     all_alerts = (overspending_alerts or []) + (recurring_alerts or []) 
     
     return jsonify({"notifications": all_alerts})
