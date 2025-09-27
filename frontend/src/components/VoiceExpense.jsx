@@ -166,34 +166,34 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
 
         {/* Voice Button */}
         <button
-          type="button"
-          onClick={startListening}
-          className={`
-                col-span-1 w-16 h-16 rounded-full shadow-lg transition-all duration-300 transform 
-                hover:scale-105 active:scale-95 flex items-center justify-center 
-            ${
-              // Theme-specific colors
-              theme === "gradient"
-                ? "bg-gradient-to-r from-indigo-500 to-blue-600 text-white"
-                : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-            }
-          `}
-          aria-label="Start Voice Input"
+        type="button"
+        onClick={startListening}
+        className={`
+              col-span-1 md:col-span-2 w-16 h-16 rounded-full shadow-lg transition-all duration-300 transform 
+              hover:scale-105 active:scale-95 flex items-center justify-center 
+          ${
+            // Theme-specific colors
+            theme === "gradient"
+              ? "bg-gradient-to-r from-indigo-500 to-blue-600 text-white"
+              : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+          }
+        `}
+        aria-label="Start Voice Input"
         >
-          {/* Check if listening state is true */}
-          {listening ? (
-              // Show the animated GIF when actively listening
-              <img 
-                src={micGifPath} 
-                alt="Microphone for voice input"
-                className="w-10 h-10 object-contain" 
-              />
-          ) : (
-              // Show a standard icon when not listening (ready state)
-              <HiMicrophone className="w-8 h-8" />
-          )}
+        {/* Check if listening state is true */}
+        {listening ? (
+            // Show the animated GIF when actively listening
+            <img 
+              src={micGifPath} 
+              alt="Microphone for voice input"
+              className="w-10 h-10 object-contain" 
+            />
+        ) : (
+            // Show a standard icon when not listening (ready state)
+            <HiMicrophone className="w-8 h-8" />
+        )}
         </button>
-
+        
         {/* Recurring Checkbox */}
         <div className="flex items-center space-x-2 pl-4 pt-2">
           <input
