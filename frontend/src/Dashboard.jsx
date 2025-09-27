@@ -48,8 +48,8 @@ const Dashboard = () => {
 
   useEffect(() => { const loadNotifications = async () => {
     try { 
-      const data = await fetchNotifications();
-      data.notifications.forEach((note) => {
+      const notifications = await fetchNotifications();
+      notifications.forEach((note) => {
         toast.info(note); 
       }); 
     } catch (err) {
