@@ -45,11 +45,9 @@ const CategoryBudgetManager = ({ theme, categories, historicalData }) => {
       // 3. 🚨 Key Fix: Re-fetch the budgets after a successful save.
       // This ensures the state is updated with the officially saved value.
       await getBudgets(); 
-      alert('Budget saved successfully!');
 
     } catch (error) {
       console.error('Error saving budget:', error);
-      alert('Failed to save budget.');
     }
   };
 

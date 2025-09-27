@@ -366,3 +366,25 @@ export const fetchNotifications = async () => {
 
   return res.json().then((json) => json.notifications);
 };
+
+ // For monthly budget
+export const fetchMonthlyBudget = async () => {
+  const res = await fetch("http://127.0.0.1:5000/budget", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+  return await res.json();
+};
+
+export const setMonthlyBudget = async (limit) => {
+  const res = await fetch("http://127.0.0.1:5000/budget", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({ limit }),
+  });
+  return await res.json();
+};

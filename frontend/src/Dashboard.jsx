@@ -16,6 +16,7 @@ import AuditLogPanel from "./components/AuditLogPanel";
 import UserSpendingSplit from "./components/UserSpendingSplit";
 import SplitSuggestionCard from "./components/SplitSuggestionCard";
 import CategoryBudgetManager from './components/CategoryBudgetManager';
+import MonthlyBudgetManager from "./components/MonthlyBudgetManager";
 
 
 const Dashboard = () => {
@@ -178,26 +179,7 @@ const Dashboard = () => {
           <ForecastChart data={forecast} theme={theme}/>
         )}
 
-        {/* Budget input */}
-        <div className={
-          theme === "gradient"
-              ? "	bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-12 px-6 rounded-2xl shadow-xl"
-              : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow"
-          }>
-          <label className="block mb-2 text-sm font-medium">
-            Monthly Budget (₹):
-          </label>
-          <input
-            type="number"
-            value={monthlyBudget}
-            onChange={(e) => setMonthlyBudget(Number(e.target.value))}
-            className={
-              theme === "gradient"
-                  ? "border p-2 rounded w-full bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 rounded-xl shadow"
-                  : "border p-2 rounded w-full dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600"
-            }
-          />
-        </div>
+        <MonthlyBudgetManager theme={theme} historicalData={historical} />
 
         <CategoryBudgetManager
           theme={theme}
