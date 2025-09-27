@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { HiMicrophone } from "react-icons/hi"; 
 import { addExpense, predictCategory } from "../services/api";
 
 const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
@@ -14,12 +13,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
-  const micGifPath = './uploaded:Enable mic.gif-02eac828-77c4-4f2f-9c27-ec8a5367974e';
-  
-  const extractAmount = (text) => {
-    const match = text.match(/\d+(\.\d+)?/);
-    return match ? parseFloat(match[0]) : 0;
-  };
+  const micGifPath =  '/public/Enable mic.gif'
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -112,6 +106,10 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
     };
   };
 
+  const extractAmount = (text) => {
+    const match = text.match(/\d+(\.\d+)?/);
+    return match ? parseFloat(match[0]) : 0;
+  };
 
   return (
     <div className={
@@ -166,35 +164,38 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
         />
 
         {/* Voice Button */}
-        <button
-        type="button"
-        onClick={() => startListening()}
-        className={`
-              col-span-1 md:col-span-2 w-16 h-16 rounded-full shadow-lg transition-all duration-300 transform 
-              hover:scale-105 active:scale-95 flex items-center justify-center 
-          ${
-            // Theme-specific colors
-            theme === "gradient"
-              ? "bg-gradient-to-r from-indigo-500 to-blue-600 text-white"
-              : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-          }
-        `}
-        aria-label="Start Voice Input"
-        >
-        {/* Check if listening state is true */}
-        {listening ? (
-            // Show the animated GIF when actively listening
-            <img 
-              src={micGifPath} 
-              alt="Microphone for voice input"
-              className="w-10 h-10 object-contain" 
-            />
-        ) : (
-            // Show a standard icon when not listening (ready state)
-            <HiMicrophone className="w-8 h-8" />
-        )}
-        </button>
-        
+        <div className="flex justify-start md:justify-end"> 
+          <button
+            type="button"
+            onClick={startListening}
+            className={`
+              w-16 h-16 rounded-full shadow-lg transition-all duration-300 transform 
+              hover:scale-105 active:scale-95 
+              flex items-center justify-center 
+              ${
+                theme === "gradient"
+                  ? "bg-gradient-to-r from-indigo-500 to-blue-600 text-white"
+                  : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+              }
+            `}
+            disabled={loading || listening}
+            aria-label="Start Voice Input"
+          >
+            {/* Conditional display logic */}
+            {listening ? (
+                // Show the animated GIF when actively listening
+                <img 
+                  src={micGifPath} 
+                  alt="Listening..."
+                  className="w-10 h-10 object-contain" 
+                />
+            ) : (
+                // Show a standard icon when not listening (ready state)
+                <MicrophoneIcon className="w-8 h-8" />
+            )}
+          </button>
+        </div>
+
         {/* Recurring Checkbox */}
         <div className="flex items-center space-x-2 pl-4 pt-2">
           <input
