@@ -169,9 +169,8 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
         type="button"
         onClick={startListening}
         className={`
-              fixed bottom-6 right-6 z-50 transition-all duration-300 transform 
-              hover:scale-105 active:scale-95 shadow-xl
-              w-16 h-16 p-3 rounded-full flex items-center justify-center 
+              col-span-1 md:col-span-2 w-16 h-16 rounded-full shadow-lg transition-all duration-300 transform 
+              hover:scale-105 active:scale-95 flex items-center justify-center 
           ${
             // Theme-specific colors
             theme === "gradient"
