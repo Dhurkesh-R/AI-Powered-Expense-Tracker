@@ -810,7 +810,8 @@ def set_monthly_budget():
         return jsonify({"error": "Missing limit"}), 400
 
     # Check if user already has a monthly budget
-    budget = Budget.query.filter_by(user_id=user.id).first()
+    budget = Budget.query.filter_by(user_id=user.id, category="Monthly").first()
+
 
     if budget:
         budget.limit = limit  # update
@@ -833,7 +834,7 @@ def get_monthly_budget():
     if not user:
         return jsonify({"error": "User not found"}), 404
 
-    budget = Budget.query.filter_by(user_id=user.id).first()
+    budget = Budget.query.filter_by(user_id=user.id, category="Monthly").first()
     if not budget:
         return jsonify({"error": "No monthly budget set"}), 404
 

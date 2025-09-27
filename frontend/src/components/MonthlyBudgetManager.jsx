@@ -31,14 +31,6 @@ const MonthlyBudgetManager = ({ theme, historicalData }) => {
     }
   };
 
-  // 🔹 Calculate total spent this month
-  const currentMonth = new Date().getMonth() + 1;
-  const totalSpentThisMonth = historicalData
-    .filter((item) => new Date(item.ds).getMonth() + 1 === currentMonth)
-    .reduce((sum, item) => sum + item.amount, 0);
-
-  const overBudget = monthlyBudget > 0 && totalSpentThisMonth > monthlyBudget;
-
   return (
     <div
       className={
@@ -48,28 +40,6 @@ const MonthlyBudgetManager = ({ theme, historicalData }) => {
       }
     >
       <h2 className="text-xl font-bold mb-2">💰 Monthly Budget</h2>
-
-      {/* Budget Alert */}
-      {monthlyBudget > 0 && (
-        <div
-          className={
-            theme === "gradient"
-              ? `p-4 rounded shadow ${
-                  overBudget ? "bg-red-900" : "bg-green-900"
-                }`
-              : `p-4 rounded shadow ${
-                  overBudget
-                    ? "bg-red-100 dark:bg-red-900"
-                    : "bg-green-100 dark:bg-green-900"
-                }`
-          }
-        >
-          <p className="text-sm">
-            Spent ₹{totalSpentThisMonth.toFixed(2)} of ₹
-            {monthlyBudget.toFixed(2)}
-          </p>
-        </div>
-      )}
 
       {/* Input + Save */}
       <label className="block my-2 text-sm font-medium">Set Budget (₹):</label>
