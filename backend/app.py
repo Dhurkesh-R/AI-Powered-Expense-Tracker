@@ -5,8 +5,15 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token, ge
 from flask_migrate import Migrate 
 import pandas as pd
 from prophet import Prophet
+import logging
 from datetime import datetime
 from datetime import timedelta
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()]
+)
 
 from config import Config
 from models import db, Expense, User, Budget
@@ -868,6 +875,7 @@ def send_recurring_expense_alerts():
             if expense.recurring_interval == "monthly" and expense.ds.day == today.day:
                 user = User.query.get(expense.user_id)
                 if user.email:  # only send if user has registered email
+                    logging.info("Sending monthly reminder to %s for %s", user.email, expense.description)
                     msg = Message(
                         subject="🔔 Recurring Expense Reminder",
                         sender=app.config['MAIL_USERNAME'],
@@ -880,6 +888,7 @@ def send_recurring_expense_alerts():
             elif expense.recurring_interval == "weekly" and expense.ds.weekday() == today.weekday():
                 user = User.query.get(expense.user_id)
                 if user.email:
+                    logging.info("Sending monthly reminder to %s for %s", user.email, expense.description)
                     msg = Message(
                         subject="🔔 Weekly Recurring Expense Reminder",
                         sender=app.config['MAIL_USERNAME'],
@@ -898,7 +907,9 @@ def send_budget_alerts():
                 expenses = Expense.query.filter_by(user_id=user.id).all()
                 monthly_total = sum(e.amount for e in expenses if e.ds.month == datetime.now().month)
 
-                if monthly_total > user.budget:
+                if monthly_total > user.budget and user.email:
+                    logging.info("Sending budget alert to %s (spent ₹%s / budget ₹%s)", 
+                             user.email, monthly_total, user.budget)
                     msg = Message(
                         subject="🚨 Monthly Budget Alert",
                         sender=app.config['MAIL_USERNAME'],
