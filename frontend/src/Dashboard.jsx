@@ -37,8 +37,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const checkEmail = async () => {
-      const res = await fetchEmail()
-      const data = await res.json();
+      const data = await fetchEmail()
       if (!data.email) setShowEmailModal(true); // show modal if email not set
     };
 

@@ -399,5 +399,5 @@ export const registerEmail = async (email) => {
     headers: getAuthHeaders(),
     body: JSON.stringify({ email }),
   });
-  return await res.json();
+  return res;
 };
