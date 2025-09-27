@@ -20,6 +20,7 @@ import CategoryBudgetManager from './components/CategoryBudgetManager';
 import MonthlyBudgetManager from "./components/MonthlyBudgetManager";
 import EmailModal from "./components/EmailModal";
 import RulesManager from "./components/RulesManager";
+import VoiceExpense from "./components/VoiceExpense";
 
 
 const Dashboard = () => {
@@ -253,8 +254,9 @@ const Dashboard = () => {
             
           </>
         )}
-        <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>
         <RulesManager theme={theme}/>
+        {/* <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/> */}
+        <VoiceExpense onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>
       </div>
     </div>
   );
