@@ -15,7 +15,12 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
   const micGifPath = './uploaded:Enable mic.gif-02eac828-77c4-4f2f-9c27-ec8a5367974e';
-
+  
+  const extractAmount = (text) => {
+    const match = text.match(/\d+(\.\d+)?/);
+    return match ? parseFloat(match[0]) : 0;
+  };
+  
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError("");
@@ -107,10 +112,6 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
     };
   };
 
-  const extractAmount = (text) => {
-    const match = text.match(/\d+(\.\d+)?/);
-    return match ? parseFloat(match[0]) : 0;
-  };
 
   return (
     <div className={
