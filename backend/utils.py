@@ -86,11 +86,11 @@ def check_overspending(user_id):
     month_start = datetime(today.year, today.month, 1) 
     expenses = Expense.query.filter( Expense.user_id == user_id, Expense.ds >= month_start ).all() 
     total_spent = sum(e.amount for e in expenses) 
-    budget = Budget.query.filter_by(user_id=user_id).first() 
+    budget = Budget.query.filter_by(user_id=user_id, category="Monthly").first() 
     if not budget: 
         return None # no budget set
         
-    percent = (total_spent / budget.monthly_budget) * 100 
+    percent = (total_spent / budget) * 100 
     alerts = [] 
     
     # overspending threshold
