@@ -740,7 +740,7 @@ def set_budget():
         return jsonify({"error": "User not found"}), 404
 
     data = request.get_json()
-    category = data.get('category')
+    category = data.get('category').strip().lower()
     limit = data.get('limit')
 
     if not category or limit is None:
