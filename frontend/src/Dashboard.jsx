@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import ForecastChart from "./components/ForecastChart";
 import HistoricalTable from "./components/HistoricalTable";
 import BudgetAlert from "./components/BudgetAlert";
