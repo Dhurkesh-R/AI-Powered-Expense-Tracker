@@ -368,7 +368,7 @@ export const fetchNotifications = async () => {
 };
 
  // For monthly budget
- export const fetchMonthlyBudget = async () => {
+export const fetchMonthlyBudget = async () => {
   const res = await fetch(`${API_BASE}/budget`, {
     method: "GET",
     headers: getAuthHeaders(),
@@ -381,6 +381,23 @@ export const setMonthlyBudget = async (limit) => {
     method: "POST",
     headers: getAuthHeaders(),
     body: JSON.stringify({ limit }),
+  });
+  return await res.json();
+};
+
+export const fetchEmail = async () => {
+  const res = await fetch(`${API_BASE}/check-email`, {
+    method: "GET",
+    headers: getAuthHeaders(),
+  });
+  return await res.json(); // return the whole object
+};
+
+export const registerEmail = async (email) => {
+  const res = await fetch(`${API_BASE}/register-email`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ email }),
   });
   return await res.json();
 };

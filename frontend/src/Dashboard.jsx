@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import ForecastChart from "./components/ForecastChart";
 import HistoricalTable from "./components/HistoricalTable";
 import BudgetAlert from "./components/BudgetAlert";
-import { fetchForecast, fetchHistorical, getGroupExpenses, fetchNotifications, fetchMonthlyBudget } from "./services/api";
+import { fetchForecast, fetchHistorical, getGroupExpenses, fetchNotifications, fetchMonthlyBudget, fetchEmail } from "./services/api";
 import { useAuth } from "./contexts/AuthContext";
 import AddExpenseForm from "./components/AddExpenseForm";
 import EmptyState from "./components/EmptyState";
@@ -18,6 +18,7 @@ import UserSpendingSplit from "./components/UserSpendingSplit";
 import SplitSuggestionCard from "./components/SplitSuggestionCard";
 import CategoryBudgetManager from './components/CategoryBudgetManager';
 import MonthlyBudgetManager from "./components/MonthlyBudgetManager";
+import EmailModal from "./components/EmailModal";
 
 
 const Dashboard = () => {
@@ -32,6 +33,18 @@ const Dashboard = () => {
   const [reloadKey, setReloadKey] = useState(0);
   const [uniqueCategories, setUniqueCategories] = useState([]);
   const [monthlyBudget, setMonthlyBudgetState] = useState(null);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+
+  useEffect(() => {
+    const checkEmail = async () => {
+      const res = await fetchEmail()
+      const data = await res.json();
+      if (!data.email) setShowEmailModal(true); // show modal if email not set
+    };
+
+    checkEmail();
+  }, []);
+
 
   // Fetch monthly budget from backend
   const getBudget = useCallback(async () => {
@@ -121,6 +134,7 @@ const Dashboard = () => {
           ? "flex justify-between items-center bg-gradient-to-br from-indigo-900 via-gray-900 to-indigo-900 text-white px-6 py-4 shadow"
           : "flex justify-between items-center bg-white dark:bg-gray-900 dark:text-white px-6 py-4 shadow"
       }>
+        {showEmailModal && <EmailModal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)} />}
         <h1 className="text-2xl font-bold text-blue-600">💸 Expense Dashboard</h1>
 
         {/* Desktop menu */}

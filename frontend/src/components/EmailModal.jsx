@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { fetchEmail } from "../services/api"
+import { registerEmail } from "../services/api"
 
 export default function EmailModal({ isOpen, onClose }) {
   const [email, setEmail] = useState("");
@@ -12,7 +12,7 @@ export default function EmailModal({ isOpen, onClose }) {
     setLoading(true);
 
     try {
-      const res = await fetchEmail()
+      const res = await registerEmail(email)
 
       const data = await res.json();
       if (res.ok) {

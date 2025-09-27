@@ -832,7 +832,10 @@ def get_notifications():
 @app.route("/register-email", methods=["POST"])
 @jwt_required()
 def register_email():
-    user_id = get_jwt_identity()
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
     data = request.get_json()
     email = data.get("email")
     dont_show = data.get("dont_show_again", False)
@@ -840,18 +843,20 @@ def register_email():
     if not email:
         return jsonify({"error": "Email is required"}), 400
 
-    user = User.query.get(user_id)
     user.email = email
     user.dont_show_email_modal = dont_show
     db.session.commit()
 
     return jsonify({"message": "Email registered successfully!"})
 
-
-from datetime import datetime
-from flask_mail import Message
-from app import mail, app
-from models import Expense, User
+@app.route("/check-email", methods=["GET"])
+@jwt_required()
+def check_email():
+    username = get_jwt_identity()
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    return jsonify({"email": user.email})
 
 def send_recurring_expense_alerts():
     with app.app_context():
