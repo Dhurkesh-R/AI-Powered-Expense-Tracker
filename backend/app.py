@@ -909,10 +909,7 @@ def get_notifications():
 @app.route("/register-email", methods=["POST"])
 @jwt_required()
 def register_email():
-    username = get_jwt_identity()
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({"error": "User not found"}), 404
+    user_id = get_jwt_identity()
     data = request.get_json()
     email = data.get("email")
     dont_show = data.get("dont_show_again", False)
@@ -920,11 +917,23 @@ def register_email():
     if not email:
         return jsonify({"error": "Email is required"}), 400
 
+    # Check if the email is already used by another user
+    existing_user = User.query.filter(User.email == email, User.id != user_id).first()
+    if existing_user:
+        return jsonify({"error": "This email is already registered with another account."}), 400
+
+    user = User.query.get(user_id)
     user.email = email
     user.dont_show_email_modal = dont_show
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to save email. Please try again."}), 500
 
     return jsonify({"message": "Email registered successfully!"})
+
 
 @app.route("/check-email", methods=["GET"])
 @jwt_required()

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { HiMicrophone } from "react-icons/hi"; 
 import { addExpense, predictCategory } from "../services/api";
 
 const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
@@ -13,6 +14,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [listening, setListening] = useState(false);
+  const micGifPath = 'uploaded:Enable mic.gif-02eac828-77c4-4f2f-9c27-ec8a5367974e';
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -168,11 +170,26 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
           onClick={startListening}
           className={
             theme === "gradient"
-              ? "col-span-1 md:col-span-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-4 py-2 rounded shadow"
-              : "col-span-1 md:col-span-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+              ? "col-span-1 md:col-span-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-4 py-2 rounded shadow flex items-center justify-center space-x-2"
+              : "col-span-1 md:col-span-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 flex items-center justify-center space-x-2"
           }
         >
-          {listening ? "Listening..." : "🎙️ Speak Expense"}
+          {/* Check if listening state is true */}
+          {listening ? (
+              // Show the HiMicrophone icon (or animated GIF) when actively listening
+              <>
+                  <HiMicrophone className="w-6 h-6 animate-pulse" />
+                  <span>Listening...</span>
+              </>
+          ) : (
+              // Show the GIF/icon when not listening (ready state)
+              <img 
+                  src={micGifPath} // Use the correct internal path
+                  alt="Microphone for voice input"
+                  // Set an appropriate size for a button icon
+                  className="w-6 h-6 object-contain" 
+              />
+          )}
         </button>
 
         {/* Recurring Checkbox */}
