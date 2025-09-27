@@ -255,7 +255,7 @@ const Dashboard = () => {
           </>
         )}
         <RulesManager theme={theme}/>
-        <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>
+        {/* <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/> */}
         {/* <VoiceExpense onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/> */}
       </div>
     </div>
