@@ -32,9 +32,10 @@ const MonthlyBudgetManager = ({ theme }) => {
       await getBudget(); // refresh after saving
       setMessage("Budget saved successfully!")
     } catch (error) {
-      setLoading(false)
       console.error("Error saving monthly budget:", error);
       setError(error.message || "Error saving budget")
+    } finally {
+      setLoading(false)
     }
   };
 
