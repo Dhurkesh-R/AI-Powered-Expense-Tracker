@@ -90,7 +90,7 @@ def check_overspending(user_id):
     if not budget: 
         return None # no budget set
         
-    percent = (total_spent / budget) * 100 
+    percent = (total_spent / budget.limit) * 100 
     alerts = [] 
     
     # overspending threshold
