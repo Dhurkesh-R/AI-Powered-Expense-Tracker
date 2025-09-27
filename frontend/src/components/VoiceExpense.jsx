@@ -163,7 +163,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
           required
         />
 
-        {/* Voice Button */}
+        {/* Voice Button
         <div className="flex justify-start md:justify-end"> 
           <button
             type="button"
@@ -178,11 +178,11 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
                   : "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
               }
             `}
-            disabled={loading || listening}
+            disabled={loading}
             aria-label="Start Voice Input"
           >
             {/* Conditional display logic */}
-            {listening ? (
+            {/* {listening ? (
                 // Show the animated GIF when actively listening
                 <img 
                   src={micGifPath} 
@@ -194,7 +194,20 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
                 <MicrophoneIcon className="w-8 h-8" />
             )}
           </button>
-        </div>
+        </div> */} 
+
+        {/* Voice Button */}
+        <button
+          type="button"
+          onClick={startListening}
+          className={
+            theme === "gradient"
+              ? "col-span-1 md:col-span-2 bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-4 py-2 rounded shadow"
+              : "col-span-1 md:col-span-2 bg-blue-600 text-white py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+          }
+        >
+          {listening ? "Listening..." : "🎙️ Speak Expense"}
+        </button>
 
         {/* Recurring Checkbox */}
         <div className="flex items-center space-x-2 pl-4 pt-2">
