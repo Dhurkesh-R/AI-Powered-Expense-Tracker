@@ -235,7 +235,7 @@ def add_expense():
             user_id=user.id,
             ds=datetime.fromisoformat(data['ds']),
             amount=float(data['amount']),
-            category=data.get('category', ''),
+            category=data.get('category', '').strip(),
             description=data.get('description', ''),
             is_recurring=data.get('is_recurring', False),
             recurring_interval=data.get('recurring_interval', None),
@@ -786,7 +786,7 @@ def set_budget():
         return jsonify({"error": "User not found"}), 404
 
     data = request.get_json()
-    category = data.get('category').strip().lower()
+    category = data.get('category')
     limit = data.get('limit')
 
     if not category or limit is None:
