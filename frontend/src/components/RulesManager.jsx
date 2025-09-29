@@ -111,8 +111,8 @@ const RulesManager = ({ theme }) => {
           disabled={loading}
           className={
             theme === "gradient"
-              ? "border p-2 rounded w-full bg-gray-800 text-white border-gray-600 bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-3 px-6 shadow disabled:opacity-50"
-              : "border p-2 rounded w-full dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-600 disabled:opacity-50"
+              ? "border p-2 rounded w-full bg-gray-800 text-white border border-gray-600 bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-3 px-6 rounded-xl shadow"
+              : "border p-2 rounded w-full dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600"
           }
         />
         <input
@@ -123,8 +123,8 @@ const RulesManager = ({ theme }) => {
           disabled={loading}
           className={
             theme === "gradient"
-              ? "border p-2 rounded w-full bg-gray-800 text-white border-gray-600 bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-3 px-6 shadow disabled:opacity-50"
-              : "border p-2 rounded w-full dark:bg-gray-800 dark:text-white border-gray-300 dark:border-gray-600 disabled:opacity-50"
+              ? "border p-2 rounded w-full bg-gray-800 text-white border border-gray-600 bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-3 px-6 rounded-xl shadow"
+              : "border p-2 rounded w-full dark:bg-gray-800 dark:text-white border border-gray-300 dark:border-gray-600"
           }
         />
         <button
@@ -132,11 +132,10 @@ const RulesManager = ({ theme }) => {
           disabled={loading || !keyword || !category}
           className={`
             text-white py-2 rounded shadow transition-all duration-300
-            ${loading || !keyword || !category 
-                ? 'bg-gray-500 cursor-not-allowed' 
-                : theme === "gradient"
-                  ? "bg-gradient-to-r from-indigo-500 to-blue-600 hover:shadow-lg"
-                  : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 hover:shadow-lg"
+            ${
+              theme === "gradient"
+                ? "bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-4 py-2 rounded shadow"
+                : "bg-blue-600 text-white py-2 rounded hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
             }
           `}
         >
