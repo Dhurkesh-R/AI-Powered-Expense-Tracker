@@ -5,7 +5,6 @@ import HistoricalTable from "./components/HistoricalTable";
 import BudgetAlert from "./components/BudgetAlert";
 import { fetchForecast, fetchHistorical, getGroupExpenses, fetchNotifications, fetchMonthlyBudget, fetchEmail } from "./services/api";
 import { useAuth } from "./contexts/AuthContext";
-// import AddExpenseForm from "./components/AddExpenseForm";
 import EmptyState from "./components/EmptyState";
 import ExpenseCharts from "./components/ExpenseCharts";
 import SummaryCards from "./components/SummaryCards";
@@ -256,7 +255,6 @@ const Dashboard = () => {
         )}
         <RulesManager theme={theme}/>
         <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>
-        {/* <VoiceExpense onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/> */}
       </div>
     </div>
   );
