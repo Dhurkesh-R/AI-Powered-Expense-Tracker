@@ -129,7 +129,6 @@ const RulesManager = ({ theme }) => {
         />
         <button
           onClick={handleAddRule}
-          disabled={loading || !keyword || !category}
           className={`
               theme === "gradient"
                 ? "bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-4 py-2 rounded shadow"
