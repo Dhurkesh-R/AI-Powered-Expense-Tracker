@@ -162,7 +162,7 @@ def add_rule():
 
         data = request.get_json()
         keyword = data.get("keyword")
-        category = data.get("category")
+        category = data.get("category").strip()
 
         if not keyword or not category:
             return jsonify({"status": "error", "message": "Keyword and category are required"}), 400
