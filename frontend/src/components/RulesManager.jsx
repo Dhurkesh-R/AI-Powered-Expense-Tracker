@@ -140,7 +140,7 @@ const RulesManager = ({ theme }) => {
       </div>
 
       {/* Collapse Toggle Header */}
-      <div className="flex justify-between items-center py-2 mt-4 cursor-pointer" onClick={toggleRulesList}>
+      <div className="flex justify-between items-center py-2 px-3 mt-4 cursor-pointer" onClick={toggleRulesList}>
         <h3 className="text-lg font-medium select-none">
           Category Rules ({rules.length})
         </h3>
