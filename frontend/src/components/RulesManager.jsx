@@ -109,7 +109,7 @@ const RulesManager = ({ theme }) => {
                 <b>{r.keyword}</b> → {r.category}
               </span>
               <button
-                onClick={handleDeleteRule(r.id)}
+                onClick={() => handleDeleteRule(r.id)}
                 className="text-red-500 hover:text-red-700"
               >
                 Delete
