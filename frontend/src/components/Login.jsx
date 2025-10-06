@@ -26,7 +26,7 @@ const Login = ({ theme }) => {
     <div className={
           theme === "gradient"
               ? "max-w-md mx-auto	bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 text-white p-6 mt-10 shadow rounded"
-              : "max-w-md mx-auto bg-white dark:bg-gray-800 dark:text-white p-6 mt-10 shadow rounded"
+              : "max-w-md mx-auto bg-white dark:bg-gray-900 dark:text-white p-6 mt-10 shadow rounded border border-gray-300 dark:border-gray-600"
           }>
       <h2 className="text-xl font-bold mb-4">Login</h2>
       <form onSubmit={handleSubmit} className="space-y-4">

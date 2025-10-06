@@ -18,7 +18,7 @@ const UserSpendingSplit = ({ groupId, theme }) => {
     <div className={
               theme === "gradient"
                 ? "basis-1/3 bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 p-4 rounded shadow"
-                : "basis-1/3 bg-white dark:bg-gray-800 p-4 rounded shadow"
+                : "basis-1/3 bg-white dark:bg-gray-900 p-4 rounded shadow"
             }>
       <h2 className={
               theme === "gradient"

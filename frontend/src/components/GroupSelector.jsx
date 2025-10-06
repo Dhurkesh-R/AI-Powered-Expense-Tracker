@@ -32,7 +32,7 @@ const GroupSelector = ({ selectedGroup, setSelectedGroup, theme }) => {
           className={
             theme === "gradient"
                 ? "w-full appearance-none border border-blue-500 bg-gradient-to-r from-blue-900 via-gray-900 to-indigo-900 text-white px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
-                : "bg-white text-gray dark:bg-gray-800 dark:text-white p-4 rounded shadow w-full appearance-none border px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                : "bg-white text-gray dark:bg-gray-900 dark:text-white p-4 rounded shadow w-full appearance-none border px-4 py-2 rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
             }
         >
           <option value="" className="text-black dark:text-white bg-white dark:bg-gray-800">Personal</option>

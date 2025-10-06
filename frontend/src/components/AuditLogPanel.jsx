@@ -15,7 +15,7 @@ const AuditLogPanel = ({ groupId }) => {
     <div className={
       theme === "gradient"
         ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 p-6 rounded-2xl shadow-xl mt-6 text-white"
-        : "bg-white dark:bg-gray-800 p-4 rounded shadow mt-6"
+        : "bg-white dark:bg-gray-900 p-4 rounded shadow mt-6 border border-gray-300 dark:border-gray-600"
     }>
       <h3 className={
         theme === "gradient"

@@ -44,7 +44,7 @@ const SplitSuggestionCard = ({ groupId, theme, onUpdated }) => {
       className={
         theme === "gradient"
           ? "basis-2/3 bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 p-4 rounded shadow space-y-3"
-          : "basis-2/3 bg-white dark:bg-gray-800 p-4 rounded shadow space-y-3"
+          : "basis-2/3 bg-white dark:bg-gray-900 p-4 rounded shadow space-y-3 border border-gray-300 dark:border-gray-600"
       }
     >
       <h2 className="text-lg font-bold">⚖️ Equal Split Summary</h2>

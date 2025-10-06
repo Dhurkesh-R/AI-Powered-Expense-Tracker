@@ -96,7 +96,7 @@ const RulesManager = ({ theme }) => {
       className={
         theme === "gradient"
           ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-6 px-6 rounded-2xl shadow-xl text-white" // Reduced padding slightly
-          : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow my-4"
+          : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow my-4 border border-gray-300 dark:border-gray-600"
       }
     >
       <h2 className="text-xl font-semibold mb-4">⚙️ Manage Rules</h2>
