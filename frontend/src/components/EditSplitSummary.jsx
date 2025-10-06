@@ -35,7 +35,7 @@ const EditSplitSummary = ({ groupId, summary, setSummary, onUpdated, onUpdated1 
   const modalClass =
     theme === "gradient"
       ? "bg-gradient-to-br from-indigo-800 via-gray-900 to-indigo-800 text-white p-6 rounded shadow-lg w-[350px]"
-      : "bg-white dark:bg-gray-900 dark:text-white p-6 rounded shadow-lg w-[350px]";
+      : "bg-white dark:bg-gray-800 dark:text-white p-6 rounded shadow-lg w-[350px]";
 
   return (
     <>

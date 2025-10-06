@@ -44,7 +44,7 @@ const MonthlyBudgetManager = ({ theme }) => {
       className={
         theme === "gradient"
           ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-12 px-6 rounded-2xl shadow-xl"
-          : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow"
+          : "bg-white dark:bg-gray-800 dark:text-white p-4 rounded shadow"
       }
     >
       <h2 className="text-xl font-bold mb-2">💰 Monthly Budget</h2>

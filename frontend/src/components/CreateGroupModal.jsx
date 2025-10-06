@@ -20,7 +20,7 @@ const CreateGroupModal = ({ onClose, onGroupCreated, theme }) => {
       <div className={
           theme === "gradient"
               ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 text-white p-6 rounded shadow-lg w-96"
-              : "bg-white dark:bg-gray-900 text-black dark:text-white p-6 rounded shadow-lg w-96"
+              : "bg-white dark:bg-gray-800 text-black dark:text-white p-6 rounded shadow-lg w-96"
           }>
         <h2 className="text-lg font-semibold mb-2">Create New Group</h2>
         <input

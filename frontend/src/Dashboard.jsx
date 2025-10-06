@@ -127,12 +127,12 @@ const Dashboard = () => {
     <div className={
       theme === "gradient"
           ? "min-h-screen bg-gray-900 text-white"
-          : "min-h-screen bg-gray-100 dark:bg-gray-800 dark:text-white"
+          : "min-h-screen bg-gray-100 dark:bg-gray-900 dark:text-white"
     }>
       <div className={
         theme === "gradient"
           ? "flex justify-between items-center bg-gradient-to-br from-indigo-900 via-gray-900 to-indigo-900 text-white px-6 py-4 shadow"
-          : "flex justify-between items-center bg-white dark:bg-gray-800 dark:text-white px-6 py-4 shadow"
+          : "flex justify-between items-center bg-white dark:bg-gray-900 dark:text-white px-6 py-4 shadow"
       }>
         {showEmailModal && <EmailModal isOpen={showEmailModal} onClose={() => setShowEmailModal(false)} />}
         <h1 className="text-2xl font-bold text-blue-600">💸 Expense Dashboard</h1>

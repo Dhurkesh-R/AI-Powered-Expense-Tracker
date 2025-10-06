@@ -116,7 +116,7 @@ const AddExpenseForm = ({ onExpenseAdded, groupId, theme }) => {
     <div className={
       theme === "gradient"
         ? "bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-12 px-6 rounded-2xl shadow-xl text-white"
-        : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow my-4"
+        : "bg-white dark:bg-gray-800 dark:text-white p-4 rounded shadow my-4"
     }>
       <h2 className="text-xl font-semibold mb-4">➕ Add New Expense</h2>
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">

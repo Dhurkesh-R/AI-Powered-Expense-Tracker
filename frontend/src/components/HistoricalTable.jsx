@@ -51,7 +51,7 @@ const HistoricalTable = ({ data, onExpenseUpdated, theme, groupId }) => {
     <div className={
           theme === "gradient"
               ? "	bg-gradient-to-br from-blue-900 via-gray-900 to-indigo-900 py-12 px-6 rounded-2xl shadow-xl overflow-x-auto"
-              : "bg-white dark:bg-gray-900 dark:text-white p-4 rounded shadow overflow-x-auto"
+              : "bg-white dark:bg-gray-800 dark:text-white p-4 rounded shadow overflow-x-auto"
           }>
       <h2 className="text-xl font-semibold mb-2">📅Historical Data</h2>
       <div className="mb-4">
@@ -134,7 +134,7 @@ const HistoricalTable = ({ data, onExpenseUpdated, theme, groupId }) => {
           <div className={
           theme === "gradient"
               ? "bg-gray-900 text-white p-6 rounded shadow-lg w-80"
-              : "bg-white dark:bg-gray-900 text-black dark:text-white p-6 rounded shadow-lg w-80"
+              : "bg-white dark:bg-gray-800 text-black dark:text-white p-6 rounded shadow-lg w-80"
           }>
             <h3 className="text-lg font-semibold mb-2">📝 Full Description</h3>
             <p className="text-sm">{descModal.text}</p>
