@@ -14,7 +14,7 @@ const GroupOptions = ({ selectedGroup, setSelectedGroup, theme, user }) => {
     <div className={
       theme === "gradient"
         ? "flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-gradient-to-r from-blue-900/80 via-gray-900/80 to-indigo-900/80 border border-blue-700 rounded-xl px-8 py-6 shadow-lg mb-6 transition-all duration-300 text-white"
-        : "flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-gray-900 dark:text-white px-8 py-6 shadow-lg mb-6 border-4 border-gray-300 dark:border-gray-600 rounded"
+        : "flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white dark:bg-gray-900 dark:text-white px-8 py-6 shadow-lg mb-6 border border-gray-300 dark:border-gray-600"
     }>
       <div className="flex-1">
         <GroupSelector

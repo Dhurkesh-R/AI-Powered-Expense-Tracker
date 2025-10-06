@@ -16,7 +16,7 @@ const SummaryCards = ({ expenses, theme }) => {
     <div className={
       theme === "gradient"
           ? "bg-gradient-to-r from-blue-900/80 via-gray-900/80 to-indigo-900/80 border border-blue-700 rounded-xl px-8 py-6 shadow-lg mb-6 transition-all duration-300 text-white grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6"
-          : "bg-white dark:bg-gray-900 dark:text-white grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 px-8 py-6 shadow-lg border-2 border-gray-300 dark:border-gray-600 rounded"
+          : "bg-white dark:bg-gray-900 dark:text-white grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 px-8 py-6 shadow-lg border border-gray-300 dark:border-gray-600 rounded"
       }>
       <div className={
       theme === "gradient"
