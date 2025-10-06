@@ -26,6 +26,9 @@ from models import *
 from flask_mail import Mail, Message
 import os
 from dotenv import load_dotenv
+from chatbot.chatbot import FinanceChatBot
+
+finance_bot = FinanceChatBot()
 
 load_dotenv()
 
@@ -944,6 +947,17 @@ def check_email():
         return jsonify({"error": "User not found"}), 404
     return jsonify({"email": user.email})
 
+@app.route("/finance-chat", methods=["POST"])
+@jwt_required()
+def finance_chat():
+    user_id = get_jwt_identity()
+    message = request.json.get("message", "")
+    if not message:
+        return jsonify({"error": "No message provided"}), 400
+
+    reply = finance_bot.chat(message, user_id)
+    return jsonify({"reply": reply})
+    
 def send_recurring_expense_alerts():
     with app.app_context():
         today = datetime.today().date()
@@ -1014,4 +1028,3 @@ def home():
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
 
-# This is a simple Flask app that serves as an API for making predictions using a pre-trained Prophet model.
