@@ -1,23 +1,8 @@
-from llm_interface import LLMInterface
-from memory import ConversationBufferMemory
-from storage import Storage
-from planner import Planner
-import json
-
-class FinanceChatBot:
-    def __init__(self):
-        self.llm = LLMInterface()
-        self.memory = ConversationBufferMemory(max_turns=10)
-        self.storage = Storage()
-        self.planner = Planner()
-
-# services/finance_chatbot/chatbot.py
-
-from services.finance_chatbot.llm_interface import LLMInterface
-from services.finance_chatbot.memory import ConversationBufferMemory
-from services.finance_chatbot.storage import Storage
-from services.finance_chatbot.planner import Planner
-from services.finance_chatbot.query_engine import QueryEngine
+from chatbot.llm_interface import LLMInterface
+from chatbot.memory import ConversationBufferMemory
+from chatbot.storage import Storage
+from chatbot.planner import Planner
+from chatbot.query_engine import QueryEngine
 from models import db
 import json
 
