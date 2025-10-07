@@ -55,7 +55,7 @@ const Chatbot = ({ theme }) => {
       {/* Floating chat icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 text-white p-4 rounded-full shadow-xl transition-all duration-300 transform ${
+        className={`fixed bottom-24 right-6 text-white p-4 rounded-full shadow-xl transition-all duration-300 transform ${
             isGradient ? `bg-gradient-to-r ${primaryColor}` : primaryColor
         } hover:scale-105 z-50`}
         aria-label="Open chat"
