@@ -66,7 +66,7 @@ const Chatbot = ({ theme }) => {
       {/* Chat window */}
       {isOpen && (
         <div 
-            className={`fixed bottom-20 right-6 w-80 md:w-96 h-96 ${containerBg} rounded-2xl shadow-2xl flex flex-col overflow-hidden z-40 transition-all duration-300 ease-out`}
+            className={`fixed bottom-32 right-6 w-80 md:w-96 h-96 ${containerBg} rounded-2xl shadow-2xl flex flex-col overflow-hidden z-40 transition-all duration-300 ease-out`}
         >
           {/* Chat Header */}
           <div className={`${headerColor} text-white px-4 py-3 flex justify-between items-center shadow-lg`}>
