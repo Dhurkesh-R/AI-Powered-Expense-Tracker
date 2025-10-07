@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send } from "lucide-react";
-import { addMessage } from "../api";
+import { addMessage } from "../services/api";
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
