@@ -14,4 +14,4 @@ flask-mail
 python-dotenv
 apscheduler
 requests
-json
+
