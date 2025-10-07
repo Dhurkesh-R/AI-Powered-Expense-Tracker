@@ -40,7 +40,7 @@ const Chatbot = () => {
       {/* Floating chat icon */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300"
+        className="fixed bottom-12 right-12 bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-full shadow-lg transition-all duration-300"
         aria-label="Open chat"
       >
         {isOpen ? <X size={22} /> : <MessageSquare size={22} />}
