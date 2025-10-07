@@ -20,7 +20,7 @@ import MonthlyBudgetManager from "./components/MonthlyBudgetManager";
 import EmailModal from "./components/EmailModal";
 import RulesManager from "./components/RulesManager";
 import AddExpenseForm from "./components/VoiceExpense";
-
+import Chatbot from "./components/Chatbot";
 
 const Dashboard = () => {
   const [forecast, setForecast] = useState([]);
@@ -255,6 +255,7 @@ const Dashboard = () => {
         )}
         <RulesManager theme={theme}/>
         <AddExpenseForm onExpenseAdded={loadHistorical} groupId={selectedGroup} theme={theme}/>
+        <Chatbot />
       </div>
     </div>
   );

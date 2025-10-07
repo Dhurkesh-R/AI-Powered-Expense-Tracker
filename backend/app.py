@@ -947,9 +947,9 @@ def check_email():
         return jsonify({"error": "User not found"}), 404
     return jsonify({"email": user.email})
 
-@app.route("/finance-chat", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 @jwt_required()
-def finance_chat():
+def chat():
     user_id = get_jwt_identity()
     message = request.json.get("message", "")
     if not message:

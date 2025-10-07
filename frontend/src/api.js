@@ -429,3 +429,12 @@ export const deleteRule = async (ruleId) => {
   });
   return await res.json(); // returns { status, message }
 };
+
+export const addMessage = async (message) => {
+  const res = await fetch(`${API_BASE}/chat`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ message }),
+  });
+  return await res.json(); // returns { status, message }
+};
