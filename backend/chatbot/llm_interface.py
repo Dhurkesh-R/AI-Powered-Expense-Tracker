@@ -1,8 +1,14 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+OLLAMA_HOST = os.getenv("OLLAMA_HOST")
 
 class LLMInterface:
-    def __init__(self, ollama_model="llama3", host="http://127.0.0.1:11434"):
+    def __init__(self, ollama_model="llama3", host=OLLAMA_HOST):
         self.model = ollama_model
         self.host = host
 
