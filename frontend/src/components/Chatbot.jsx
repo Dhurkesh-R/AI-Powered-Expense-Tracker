@@ -43,7 +43,7 @@ const Chatbot = ({ theme }) => {
   };
 
   // Dynamic Theme Classes
-  const primaryColor = isGradient ? "from-indigo-600 to-blue-700 hover:from-indigo-700 hover:to-blue-800" : "bg-blue-600 hover:bg-blue-700";
+  const primaryColor = isGradient ? "from-indigo-600 to-blue-700 hover:from-indigo-700 hover:to-blue-800" : "bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800";
   const userBubbleColor = isGradient ? "bg-indigo-500 text-white rounded-br-xl" : "bg-blue-600 text-white rounded-br-lg";
   const botBubbleColor = isGradient ? "bg-gray-800 text-gray-100 rounded-bl-xl" : "bg-gray-200 dark:bg-gray-800 dark:text-gray-100 rounded-bl-lg";
   const headerColor = isGradient ? "bg-gradient-to-r from-indigo-700 to-blue-800" : "bg-blue-600";
