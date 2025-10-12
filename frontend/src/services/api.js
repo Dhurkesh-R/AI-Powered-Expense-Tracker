@@ -436,5 +436,5 @@ export const getBotReply = async (message) => {
     headers: getAuthHeaders(),
     body: JSON.stringify({ message }),
   });
-  return await res.json(); // returns { status, message }
+  return res.json().then((json) => json.reply);
 };
