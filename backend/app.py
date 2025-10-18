@@ -1016,8 +1016,10 @@ def send_budget_alerts():
         print("Error:", e)
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=send_recurring_expense_alerts, trigger="interval", days=1)
-scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)
+# scheduler.add_job(func=send_recurring_expense_alerts, trigger="interval", days=1)
+# scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)
+scheduler.add_job(func=send_recurring_expense_alerts, trigger="date", run_date=datetime.now() + timedelta(seconds=5))
+scheduler.add_job(func=send_budget_alerts, trigger="date", run_date=datetime.now() + timedelta(seconds=10))
 scheduler.start()
 
 @app.route('/')
