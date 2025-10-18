@@ -959,9 +959,11 @@ def chat():
     return jsonify({"reply": reply})
     
 def send_recurring_expense_alerts():
+    print("🔥 send_recurring_expense_alerts() started")
     with app.app_context():
         today = datetime.today().date()
         recurring_expenses = Expense.query.filter_by(is_recurring=True).all()
+        print("Found recurring_expenses:", recurring_expenses)
 
         for expense in recurring_expenses:
             # Monthly recurring
@@ -993,33 +995,60 @@ def send_recurring_expense_alerts():
 
 
 def send_budget_alerts():
+    print("🔥 send_budget_alerts() started")
+
     try:
         with app.app_context():
             users = User.query.all()
-            for user in users:
-                expenses = Expense.query.filter_by(user_id=user.id).all()
-                monthly_total = sum(e.amount for e in expenses if e.ds.month == datetime.now().month)
+            print(f"Found {len(users)} users")
 
-                if monthly_total > user.budget and user.email:
-                    logging.info("Sending budget alert to %s (spent ₹%s / budget ₹%s)", 
-                             user.email, monthly_total, user.budget)
+            for user in users:
+                # Fetch the user's monthly budget (if it exists)
+                budget_entry = Budget.query.filter_by(user_id=user.id, category="Monthly").first()
+
+                if not budget_entry:
+                    print(f"⚠️ No monthly budget found for {user.username}, skipping...")
+                    continue
+
+                budget_limit = budget_entry.limit  # use 'limit' field from your model
+
+                # Fetch user's expenses for the current month
+                expenses = Expense.query.filter_by(user_id=user.id).all()
+                monthly_total = sum(
+                    e.amount for e in expenses if e.ds.month == datetime.now().month
+                )
+
+                # Check if they exceeded budget
+                if monthly_total > budget_limit and user.email:
+                    logging.info(
+                        "🚨 Budget alert for %s (spent ₹%s / limit ₹%s)",
+                        user.email,
+                        monthly_total,
+                        budget_limit,
+                    )
+
                     msg = Message(
                         subject="🚨 Monthly Budget Alert",
-                        sender=app.config['MAIL_USERNAME'],
+                        sender=app.config["MAIL_USERNAME"],
                         recipients=[user.email],
-                        body=f"Hi {user.username}, you've spent ₹{monthly_total} this month, exceeding your budget of ₹{user.budget}!"
+                        body=(
+                            f"Hi {user.username},\n\n"
+                            f"You've spent ₹{monthly_total} this month, exceeding your budget limit of ₹{budget_limit}.\n"
+                            "Try reviewing your expenses and plan wisely.\n\n"
+                            "— Your AI Expense Tracker 🤖"
+                        ),
                     )
                     mail.send(msg)
-                    print("Mail sent successfully!")
+                    print(f"✅ Mail sent successfully to {user.email}")
+                else:
+                    print(f"✅ {user.username} is within budget (₹{monthly_total} / ₹{budget_limit})")
 
     except Exception as e:
-        print("Error:", e)
+        print("❌ Error in send_budget_alerts():", e)
 
 scheduler = BackgroundScheduler()
-# scheduler.add_job(func=send_recurring_expense_alerts, trigger="interval", days=1)
-# scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)
-scheduler.add_job(func=send_recurring_expense_alerts, trigger="date", run_date=datetime.now() + timedelta(seconds=5))
-scheduler.add_job(func=send_budget_alerts, trigger="date", run_date=datetime.now() + timedelta(seconds=10))
+scheduler.add_job(func=send_recurring_expense_alerts, trigger="interval", days=1)
+scheduler.add_job(func=send_budget_alerts, trigger="cron", hour=20)
 scheduler.start()
 
 @app.route('/')
