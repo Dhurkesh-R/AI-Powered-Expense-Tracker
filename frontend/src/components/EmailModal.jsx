@@ -67,7 +67,7 @@ export default function EmailModal({ isOpen, onClose, theme }) {
     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000] p-4 transition-opacity duration-300">
       <div className={cardClasses}>
         <h2 className="text-2xl font-extrabold mb-4">🔔 Budget Alerts Setup</h2>
-        <p className="mb-4 text-gray-300 dark:text-gray-400">
+        <p className="mb-4 text-black dark:text-white">
           Enter your email to receive **real-time notifications** about overspending, budget forecasts, and recurring expenses:
         </p>
         
