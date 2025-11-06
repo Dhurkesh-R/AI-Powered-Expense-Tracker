@@ -54,6 +54,7 @@ Keep responses concise and conversational.
 --- Conversation Memory ---
 {memory_context}
 
+
 --- Recent Expenses ---
 {expense_context}
 
