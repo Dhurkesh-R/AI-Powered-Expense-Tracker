@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 from chatbot.llm_interface import LLMInterface
 from chatbot.memory import ConversationBufferMemory
 from chatbot.storage import Storage
@@ -6,16 +7,19 @@ from chatbot.query_engine import QueryEngine
 from models import db
 import json
 
-class FinanceChatBot:
-    def __init__(self):
-        self.llm = LLMInterface()
-        self.memory = ConversationBufferMemory(max_turns=10)
-        self.storage = Storage()
-        self.planner = Planner()
-        self.query_engine = QueryEngine(db)
+# --- Initialize Flask app ---
+app = Flask(__name__)
 
-    def _get_system_prompt(self) -> str:
-        return """
+# --- Initialize Chatbot Components ---
+llm = LLMInterface()
+memory = ConversationBufferMemory(max_turns=10)
+storage = Storage()
+planner = Planner()
+query_engine = QueryEngine(db)
+
+
+def get_system_prompt():
+    return """
 You are FinMate, an intelligent personal finance assistant integrated into a user's expense tracker app.
 
 Goals:
@@ -33,33 +37,59 @@ Example abilities:
 Keep responses concise and conversational.
 """
 
-    def chat(self, user_input: str, user_id: int):
-        # Step 1 — Save user input
-        self.memory.update("user", user_input)
 
-        # Step 2 — If it's a query about spending, call QueryEngine
+def chat_with_bot(user_input: str, user_id: int = 1):
+    """Main chat handler logic."""
+
+    # Step 1 — Save user message
+    memory.update("user", user_input)
+
+    try:
+        # Step 2 — Handle expense-related queries
         if any(word in user_input.lower() for word in ["spent", "expense", "spending", "budget", "cost"]):
-            db_response = self.query_engine.parse_query(user_input, user_id)
-            self.memory.update("assistant", db_response)
+            db_response = query_engine.parse_query(user_input, user_id)
+            memory.update("assistant", db_response)
             return db_response
 
-        # Step 3 — Otherwise use LLM for normal finance talk
-        memory_context = self.memory.get_context()
-        recent_expenses = self.storage.get_recent_expenses()
+        # Step 3 — General finance conversation
+        memory_context = memory.get_context()
+        recent_expenses = storage.get_recent_expenses()
         expense_context = json.dumps(recent_expenses, indent=2)
-        system_prompt = self._get_system_prompt()
+        system_prompt = get_system_prompt()
 
         final_prompt = f"""{system_prompt}
 
 --- Conversation Memory ---
 {memory_context}
 
---- Recent Expenses ---
+--- User Expense Context ---
 {expense_context}
 
+--- New Message ---
 User: {user_input}
 Assistant:"""
 
-        reply = self.llm.get_reply(final_prompt)
-        self.memory.update("assistant", reply)
-        return reply
+        # Step 4 — Call LLM for response
+        response = llm.generate_response(final_prompt)
+        memory.update("assistant", response)
+        return response or "I'm here to help with your finances, but I didn’t get that. Try again!"
+
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return "I couldn’t process that right now. Please try again."
+
+
+# --- Flask Route for Chatbot ---
+@app.route("/chat", methods=["POST"])
+def chat_endpoint():
+    data = request.get_json(force=True)
+    user_input = data.get("message", "")
+    user_id = data.get("user_id", 1)
+
+    response = chat_with_bot(user_input, user_id)
+    return jsonify({"response": response})
+
+
+# --- Run the server ---
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
