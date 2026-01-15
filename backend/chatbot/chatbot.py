@@ -33,17 +33,18 @@ Example abilities:
 Keep responses concise and conversational.
 """
 
-    def chat(self, user_input: str, user_id: int):
-        # Step 1 — Save user input
+    def chat(self, user_input: str, user_id: int = 1):
+        """Chat function to process messages directly."""
+        # Save user input in memory
         self.memory.update("user", user_input)
 
-        # Step 2 — If it's a query about spending, call QueryEngine
+        # Check if user is asking about expenses
         if any(word in user_input.lower() for word in ["spent", "expense", "spending", "budget", "cost"]):
             db_response = self.query_engine.parse_query(user_input, user_id)
             self.memory.update("assistant", db_response)
             return db_response
 
-        # Step 3 — Otherwise use LLM for normal finance talk
+        # Otherwise, generate a response using the LLM
         memory_context = self.memory.get_context()
         recent_expenses = self.storage.get_recent_expenses()
         expense_context = json.dumps(recent_expenses, indent=2)
@@ -54,12 +55,30 @@ Keep responses concise and conversational.
 --- Conversation Memory ---
 {memory_context}
 
---- Recent Expenses ---
+--- User Expense Context ---
 {expense_context}
 
+--- New Message ---
 User: {user_input}
 Assistant:"""
 
-        reply = self.llm.get_reply(final_prompt)
-        self.memory.update("assistant", reply)
-        return reply
+        # Use LLM to generate a reply
+        response = self.llm.generate_response(final_prompt)
+        self.memory.update("assistant", response)
+        return response
+
+
+# Run interactively (no server)
+if __name__ == "__main__":
+    bot = FinanceChatBot()
+    print("💬 FinMate Personal Finance Assistant")
+    print("Type 'exit' to quit.\n")
+
+    while True:
+        user_message = input("You: ")
+        if user_message.lower() in ["exit", "quit"]:
+            print("👋 Goodbye!")
+            break
+
+        reply = bot.chat(user_message)
+        print(f"FinMate: {reply}\n")
