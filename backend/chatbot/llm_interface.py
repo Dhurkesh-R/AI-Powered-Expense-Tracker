@@ -19,7 +19,7 @@ class LLMInterface:
                 f"{self.host}/api/generate",
                 json={"model": self.model, "prompt": prompt},
                 stream=True,
-                timeout=120
+                timeout=600
             )
             response.raise_for_status()
             
